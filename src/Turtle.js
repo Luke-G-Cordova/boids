@@ -48,6 +48,16 @@ export default class Turtle{
         }
         this.degreesRotated += degrees;
     }
+    
+    radiansAway(x, y){
+        let fromOrigin = Turtle.normalizeRadians(Turtle.degToRad(this.degreesRotated));
+        return Turtle.addRadians(Math.tan((x-this.getX())/(y-this.getY())), -fromOrigin);
+    }
+    // gives the degrees of clockwise rotation until the x, y coordinates
+    degreesAway(x, y){
+        let fromOrigin = Turtle.normalizeDegrees(this.degreesRotated);
+        return Turtle.addDegrees(Turtle.radToDeg(Math.tan((x-this.getX())/(y-this.getY()))), -fromOrigin);
+    }
     getPts(){
         return {
             x: this.xPts,
@@ -98,5 +108,33 @@ export default class Turtle{
         ctx.closePath();
         ctx.fill();
         ctx.fillStyle = ogFill;
+    }
+    static degToRad(degrees){
+        return degrees * (Math.PI/180);
+    }
+    static radToDeg(radians){
+        return radians * (180/Math.PI);
+    }
+    static normalizeDegrees(degree){
+        while(degree > 360)degree -= 360;
+        while(degree < 0)degree+=360;
+        return degree;
+    }
+    static addDegrees(degree1, degree2){
+        let ans = degree1+degree2;
+        while(ans > 360)ans -= 360;
+        while(ans < 0)ans+=360;
+        return ans;
+    }
+    static normalizeRadians(radian){
+        while(radian > 2 * Math.PI) radian -= 2 * Math.PI;
+        while(radian < 0) radian += 2 * Math.PI;
+        return radian;
+    }
+    static addRadians(radian1, radian2){
+        let ans = radian1+radian2;
+        while(ans > 2 * Math.PI) ans -= 2 * Math.PI;
+        while(ans < 0) ans += 2 * Math.PI;
+        return ans;
     }
 }

@@ -9,7 +9,9 @@ export var BoidSimulation = {
     ctx: null,
     loop : function(){
         for(let i = this.boids.population.length-1;i>=0;i--){
-            this.boids.seperate(this.boids.population[i]);
+            for(let j = this.boids.population.length-1;j>=0;j--){
+                this.boids.seperate(this.boids.population[i], j);
+            }
             this.boids.population[i].drawOnCanvas(this.ctx);
         }
     },

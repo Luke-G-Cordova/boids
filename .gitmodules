@@ -1,0 +1,6 @@
+[submodule "src/turtle.js"]
+	path = src/turtle.js
+	url = https://github.com/Luke-G-Cordova/turtle.js.git
+[submodule "turtle.js"]
+	path = turtle.js
+	url = https://github.com/Luke-G-Cordova/turtle.js.git

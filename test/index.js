@@ -1,1 +1,3 @@
-console.log('hello world');
+
+let boid = new Boid();
+boid.setSeperation(1);

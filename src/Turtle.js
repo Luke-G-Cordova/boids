@@ -4,7 +4,7 @@ export default class Turtle{
         this.y = 0;
         this.w = 10;
         this.h = 20;
-        this.velocity = [2, 2];
+        this.velocity = [1, 1];
         this.color = 'blue';
 
         if(options)Object.assign(this, options);
@@ -84,6 +84,9 @@ export default class Turtle{
         this.yPts[2] = this.y + (this.h / 2);
         this.degreesRotated = 0;
     }
+    getY(){return this.y;}
+    getX(){return this.x;}
+    getDegreesRotated() {return this.degreesRotated;}
     drawOnCanvas(ctx){
         let ogFill = ctx.fillStyle;
         ctx.fillStyle = this.color;

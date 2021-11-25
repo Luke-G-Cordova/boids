@@ -6,11 +6,15 @@ export default class Flock{
 
         if(options)Object.assign(this, options);
     }
-    seperate(cBoid, i){
-        if(cBoid.canSee(this.population[i])){
-            let distance = Math.pow(this.population[i].getX() - cBoid.getX(), 2)+Math.pow(this.population[i].getY() - cBoid.getY(), 2);
-            distance = Math.sqrt(distance);
-            // console.log(distance);
+    seperate(cBoid, oBoid){
+        let bias = 2;
+        if(cBoid.canSee(oBoid)){
+            if(cBoid.degreesAway(oBoid.getX(), oBoid.getY()) > 180){
+                cBoid.nextAngle += bias;
+            }else{
+                cBoid.nextAngle -= bias;
+
+            }
         }
     }
     align(){
@@ -19,11 +23,18 @@ export default class Flock{
     cohesive(){
         
     }
-    step(){
-        for(let i = this.population.length - 1;i>=0;i--){
-            this.population[i].moveInDirection(this.population[i].nextAngle);
+    walls(cBoid, x1, x2, y1, y2){
+        let cX = cBoid.getX(), cY = cBoid.getY();
+        let bias = 1;
+        if(cBoid.canSee(x1, cY)){
+            if(cBoid.degreesAway(x1, cY) > 180){
+                cBoid.nextAngle += bias;
+            }else{
+                cBoid.nextAngle -= bias;
+            }
         }
     }
+    
     setSeperation(on){this.seperation = Boolean(on);}
     setAlignment(on){this.alignment = Boolean(on);}
     setCohesion(on){this.cohesion = Boolean(on);}

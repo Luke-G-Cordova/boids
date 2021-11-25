@@ -27,8 +27,7 @@ export default class Turtle{
         
     }
     moveInDirection(degreesFromOrigin){
-        while(degreesFromOrigin > 360)degreesFromOrigin -= 360;
-        while(degreesFromOrigin < 0)degreesFromOrigin += 360;
+        degreesFromOrigin = Turtle.normalizeDegrees(degreesFromOrigin);
         this.addToX(this.velocity[0]*Math.cos((degreesFromOrigin+90)*Math.PI/180));
         this.addToY(this.velocity[1]*Math.sin((degreesFromOrigin+90)*Math.PI/180));
         this.rotateTo(degreesFromOrigin);
@@ -53,10 +52,18 @@ export default class Turtle{
         let fromOrigin = Turtle.normalizeRadians(Turtle.degToRad(this.degreesRotated));
         return Turtle.addRadians(Math.tan((x-this.getX())/(y-this.getY())), -fromOrigin);
     }
-    // gives the degrees of clockwise rotation until the x, y coordinates
+    
     degreesAway(x, y){
         let fromOrigin = Turtle.normalizeDegrees(this.degreesRotated);
-        return Turtle.addDegrees(Turtle.radToDeg(Math.tan((x-this.getX())/(y-this.getY()))), -fromOrigin);
+        let oX = x-this.getX(), oY = y-this.getY();
+        let mult= oY===0?1:oY/Math.abs(oY);
+        let angle = oX/this.distanceTo(x, y);
+        angle = (Math.round(Turtle.radToDeg(Math.acos(angle))) * mult) - 90;
+        if(angle === -180) angle = 180;
+        return Turtle.normalizeDegrees(angle - fromOrigin);
+    }
+    distanceTo(x, y){
+        return Math.sqrt(Math.pow(x - this.getX(), 2) + Math.pow(y - this.getY(), 2));
     }
     getPts(){
         return {
@@ -73,6 +80,7 @@ export default class Turtle{
         this.setY(Math.round(this.trueY));
     }
     setX(x){
+        this.trueX = x;
         this.x = x;
 
         this.xPts[0] = this.x - (this.w / 2);
@@ -84,6 +92,7 @@ export default class Turtle{
         this.degreesRotated = 0;
     }
     setY(y){
+        this.trueY = y;
         this.y = y;
 
         this.xPts[0] = this.x - (this.w / 2);

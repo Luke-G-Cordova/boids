@@ -7,13 +7,12 @@ export default class Flock{
         if(options)Object.assign(this, options);
     }
     seperate(cBoid, oBoid){
-        let bias = 2;
         if(cBoid.canSee(oBoid)){
+            let distance = cBoid.distanceTo(oBoid.getX(), oBoid.getY()) / 10;
             if(cBoid.degreesAway(oBoid.getX(), oBoid.getY()) > 180){
-                cBoid.nextAngle += bias;
+                cBoid.nextAngle += distance;
             }else{
-                cBoid.nextAngle -= bias;
-
+                cBoid.nextAngle -= distance;
             }
         }
     }

@@ -38,12 +38,12 @@ export default class Turtle{
     rotateAroundCenter(degrees){
         let ogx, ogy;
         for(let i = 0;i<this.xPts.length;i++){
-            ogx = this.xPts[i]-this.x;
-            ogy = this.yPts[i]-this.y;
+            ogx = this.xPts[i]-this.trueX;
+            ogy = this.yPts[i]-this.trueY;
             let xPrime = Math.round((ogx*Math.cos(degrees*this.rad))-(ogy*Math.sin(degrees*this.rad)));
             let yPrime = Math.round((ogy*Math.cos(degrees*this.rad))+(ogx*Math.sin(degrees*this.rad)));
-            this.xPts[i] = xPrime+this.x;
-            this.yPts[i] = yPrime+this.y;
+            this.xPts[i] = xPrime+this.trueX;
+            this.yPts[i] = yPrime+this.trueY;
         }
         this.degreesRotated += degrees;
     }
@@ -83,28 +83,28 @@ export default class Turtle{
         this.trueX = x;
         this.x = x;
 
-        this.xPts[0] = this.x - (this.w / 2);
-        this.yPts[0] = this.y - (this.h / 2);
-        this.xPts[1] = this.x + (this.w / 2);
-        this.yPts[1] = this.y - (this.h / 2);
-        this.xPts[2] = this.x; 
-        this.yPts[2] = this.y + (this.h / 2);
+        this.xPts[0] = this.trueX - (this.w / 2);
+        this.yPts[0] = this.trueY - (this.h / 2);
+        this.xPts[1] = this.trueX + (this.w / 2);
+        this.yPts[1] = this.trueY - (this.h / 2);
+        this.xPts[2] = this.trueX; 
+        this.yPts[2] = this.trueY + (this.h / 2);
         this.degreesRotated = 0;
     }
     setY(y){
         this.trueY = y;
         this.y = y;
 
-        this.xPts[0] = this.x - (this.w / 2);
-        this.yPts[0] = this.y - (this.h / 2);
-        this.xPts[1] = this.x + (this.w / 2);
-        this.yPts[1] = this.y - (this.h / 2);
-        this.xPts[2] = this.x; 
-        this.yPts[2] = this.y + (this.h / 2);
+        this.xPts[0] = this.trueX - (this.w / 2);
+        this.yPts[0] = this.trueY - (this.h / 2);
+        this.xPts[1] = this.trueX + (this.w / 2);
+        this.yPts[1] = this.trueY - (this.h / 2);
+        this.xPts[2] = this.trueX; 
+        this.yPts[2] = this.trueY + (this.h / 2);
         this.degreesRotated = 0;
     }
-    getY(){return this.y;}
-    getX(){return this.x;}
+    getY(){return this.trueY;}
+    getX(){return this.trueX;}
     getDegreesRotated() {return this.degreesRotated;}
     drawOnCanvas(ctx){
         let ogFill = ctx.fillStyle;
@@ -116,6 +116,8 @@ export default class Turtle{
         ctx.lineTo(this.xPts[0], this.yPts[0]);
         ctx.closePath();
         ctx.fill();
+        ctx.fillStyle = 'red';
+        ctx.fillText(this.degreesRotated, this.getX(), this.getY());
         ctx.fillStyle = ogFill;
     }
     static degToRad(degrees){

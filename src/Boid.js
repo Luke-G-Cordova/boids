@@ -13,18 +13,28 @@ export default class Boid extends Turtle{
         if(options)Object.assign(this, options);
         this.rotateTo(this.nextAngle);
     }
-    canSee(otherBoid){
-        let distance = this.distanceTo(otherBoid.getX(), otherBoid.getY());
-        let angle = Math.abs(this.degreesAway(otherBoid.getX(), otherBoid.getY()));
+    canSee(options){
+        let ogo = {
+            otherBoid: null, 
+            x: null, 
+            y: null
+        }
+        Object.assign(ogo, options);
+        if(!!ogo.otherBoid){
+            ogo.x = ogo.otherBoid.getX();
+            ogo.y = ogo.otherBoid.getY();
+        }
+        let distance = this.distanceTo(ogo.x, ogo.y);
+        let angle = Math.abs(this.degreesAway(ogo.x, ogo.y));
         angle = angle > 180 ? 360 - angle : angle;
         return angle <= this.eiboh/2 && distance <= this.visibility;
     }
-    canSee(x, y){
-        let distance = this.distanceTo(x, y);
-        let angle = Math.abs(this.degreesAway(x, y));
-        angle = angle > 180 ? 360 - angle : angle;
-        return angle <= this.eiboh/2 && distance <= this.visibility;
-    }
+    // canSee(x, y){
+    //     let distance = this.distanceTo(x, y);
+    //     let angle = Math.abs(this.degreesAway(x, y));
+    //     angle = angle > 180 ? 360 - angle : angle;
+    //     return angle <= this.eiboh/2 && distance <= this.visibility;
+    // }
     drawVision(ctx){
         let ogStroke = ctx.strokeStyle;
         ctx.strokeStyle = this.color;

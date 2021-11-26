@@ -15,14 +15,14 @@ export var BoidSimulation = {
             }
             this.step(this.boids.population[i]);
             this.boids.population[i].drawOnCanvas(this.ctx);
-            this.boids.walls(this.boids.population[i], 0, 500, 0, 500);
+            // this.boids.walls(this.boids.population[i], 0, 500, 0, 500);
         }
     },
     createPopulation(size, options={}){
         for(let i = 0;i<size;i++){
             options.x = Math.random() * 500;
             options.y = Math.random() * 500;
-            options.nextAngle = Math.random() * 360;
+            // options.nextAngle = Math.random() * 360;
             this.boids.population.push(new Boid(options));
         }
     }, 

@@ -6,11 +6,11 @@ let ctx = canvas.getContext('2d');
 let boid = new Boid({x: 100, y: 100, velocity: [1, 1]});
 let boid2 = new Boid({x: 50, y: 100, velocity: [1, 1]});
 
-// boid.rotateTo(-121);
+// boid.rotateTo(121);
 draw(ctx, boid.getXPts(), boid.getYPts(), 'red');
+boid.drawVision(ctx);
 draw(ctx, boid2.getXPts(), boid2.getYPts());
 
-console.log(boid.canSee({boid: boid2}));
 // setInterval(loop, 5);
 // loop();
 let deg = 0;
@@ -18,6 +18,8 @@ function loop(){
     clear(ctx);
     draw(ctx, boid.getXPts(), boid.getYPts());
     boid.moveInDirection(deg);
+    boid.drawVision(ctx);
+
     deg+=1;
 }
 

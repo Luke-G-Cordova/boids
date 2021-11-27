@@ -131,6 +131,12 @@ export default class Turtle {
         let myAngle = Turtle.angConv(this.#degreesRotated, {to: 'radians'});
         return ogAngle - myAngle;
     }
+    getXTo(r, theta){
+        return (r * Math.cos(theta)) - Turtle.angConv(this.#degreesRotated, {to: 'radians'});
+    }
+    getYTo(r, theta){
+        return (r * Math.sin(theta)) - Turtle.angConv(this.#degreesRotated, {to: 'radians'});
+    }
     getX(){return this.#x;}
     getY(){return this.#y;}
     getW(){return this.#w;}

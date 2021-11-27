@@ -1,26 +1,32 @@
 import Turtle from "../src/Turtle.js";
+import Boid from "../src/Boid.js";
 
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
-let turtle = new Turtle({x: 100, y: 100, velocity: [3, 3]});
+let boid = new Boid({x: 100, y: 100, velocity: [1, 1]});
+let boid2 = new Boid({x: 50, y: 100, velocity: [1, 1]});
 
+// boid.rotateTo(-121);
+draw(ctx, boid.getXPts(), boid.getYPts(), 'red');
+draw(ctx, boid2.getXPts(), boid2.getYPts());
 
-setInterval(loop, 10);
+console.log(boid.canSee({boid: boid2}));
+// setInterval(loop, 5);
 // loop();
 let deg = 0;
 function loop(){
     clear(ctx);
-    draw(ctx, turtle.getXPts(), turtle.getYPts());
-    turtle.moveInDirection(deg);
+    draw(ctx, boid.getXPts(), boid.getYPts());
+    boid.moveInDirection(deg);
     deg+=1;
 }
 
 
 
 
-function draw(ctx, xPts, yPts){
+function draw(ctx, xPts, yPts, color='black'){
     let ogFill = ctx.fillStyle;
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(xPts[0], yPts[0]);
     ctx.lineTo(xPts[1], yPts[1]);

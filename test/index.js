@@ -5,9 +5,9 @@ import BoidSimulation from '../src/BoidSimulation.js';
 
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
-let bs = new BoidSimulation({ctx: ctx});
+let bs = new BoidSimulation({ctx: ctx, flockSize: 20});
 
-setInterval(loop, 5);
+// setInterval(loop, 5);
 function loop(){
     clear(ctx);
     bs.loop();

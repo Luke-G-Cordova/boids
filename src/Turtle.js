@@ -23,7 +23,7 @@ export default class Turtle {
             y: 0, 
             w: 12,
             h: 20, 
-            color: 'black',
+            color: 'blue',
             velocity: [1, 1],
             angle: 0
         }

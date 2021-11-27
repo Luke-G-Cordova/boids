@@ -1,48 +1,23 @@
 import Turtle from "../src/Turtle.js";
 import Boid from "../src/Boid.js";
+import Flock from "../src/Flock.js";
+import BoidSimulation from '../src/BoidSimulation.js';
 
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
-let boid = new Boid({x: 100, y: 100, velocity: [1, 1]});
-let boid2 = new Boid({x: 50, y: 100, velocity: [1, 1]});
+let bs = new BoidSimulation({ctx: ctx});
 
-// boid.rotateTo(121);
-draw(ctx, boid.getXPts(), boid.getYPts(), 'red');
-boid.drawVision(ctx);
-draw(ctx, boid2.getXPts(), boid2.getYPts());
-
-// setInterval(loop, 5);
-// loop();
-let deg = 0;
+setInterval(loop, 5);
 function loop(){
     clear(ctx);
-    draw(ctx, boid.getXPts(), boid.getYPts());
-    boid.moveInDirection(deg);
-    boid.drawVision(ctx);
+    bs.loop();
 
-    deg+=1;
 }
 
-
-
-
-function draw(ctx, xPts, yPts, color='black'){
-    let ogFill = ctx.fillStyle;
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(xPts[0], yPts[0]);
-    ctx.lineTo(xPts[1], yPts[1]);
-    ctx.lineTo(xPts[2], yPts[2]);
-    ctx.lineTo(xPts[0], yPts[0]);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = ogFill;
-}
 
 function clear(ctx){
     let ogFill = ctx.fillStyle;
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = ogFill;
-    
 }

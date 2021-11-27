@@ -5,7 +5,7 @@ export default class Boid extends Turtle{
         super(options);
         let ogo = {
             nextAngle: 0, 
-            visibility: 50,
+            visibility: 100,
             eiboh: 240
         }
         Object.assign(ogo, options);
@@ -30,6 +30,20 @@ export default class Boid extends Turtle{
         ) && (
             this.getRadius(x, y) <= this.visibility
         );
+    }
+    draw(ctx){
+        let ogFill = ctx.fillStyle;
+        ctx.fillStyle = this.getColor();
+        let xPts = this.getXPts();
+        let yPts = this.getYPts();
+        ctx.beginPath();
+        ctx.moveTo(xPts[0], yPts[0]);
+        ctx.lineTo(xPts[1], yPts[1]);
+        ctx.lineTo(xPts[2], yPts[2]);
+        ctx.lineTo(xPts[0], yPts[0]);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = ogFill;
     }
     drawVision(ctx){
         let ogStroke = ctx.strokeStyle;

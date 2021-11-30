@@ -1,125 +1,55 @@
+import {default as V} from './Vector.js';
+
 
 export default class Turtle {
-    #x = 0;
-    #y = 0;
-    #trueX = 0;
-    #trueY = 0;
-    #w = 0;
-    #h = 0;
-    #velocity = [0, 0];
-    #color = 'black';
-    #xPts = new Array(3);
-    #yPts = new Array(3);
+    #posVec;
+    #velocity;
+    #forces = [];
+    #sForce;
     #degreesRotated = 0;
-    #correctPts(){
-        this.#xPts[0] = this.#x - (this.#h/2);this.#yPts[0] = this.#y;
-        this.#xPts[1] = this.#x + (this.#h/2);this.#yPts[1] = this.#y + (this.#w/2);
-        this.#xPts[2] = this.#x + (this.#h/2);this.#yPts[2] = this.#y - (this.#w/2);
-        this.#degreesRotated = 0;
-    }
+    #forceAdder = V.createNew(0, 0);
     constructor(options){
         let ogo = {
             x: 0, 
-            y: 0, 
-            w: 12,
-            h: 20, 
-            color: 'blue',
-            velocity: [1, 1],
-            angle: 0
+            y: 0,
+            speed: .5,
+            limit: .0001
         }
         Object.assign(ogo, options);
-        this.#x = ogo.x;
-        this.#y = ogo.y;
-        this.#trueX = ogo.x;
-        this.#trueY = ogo.y;
-        this.#w = ogo.w;
-        this.#h = ogo.h;
-        this.#color = ogo.color;
-        this.#velocity = ogo.velocity;
-        this.#correctPts();
+        this.#posVec = V.createNew(ogo.x, ogo.y);
+        this.#velocity = ogo.speed;
+        this.#posVec.limit(ogo.limit);
     }
+    moveTurtle(){
+        // this.#posVec.add(this.#forceAdder);
 
-    moveInDirection(angle, options){
-        let ogo = {
-            type: 'degrees'
+        if(this.#sForce){
+            this.#forceAdder.add(this.#sForce);
         }
-        Object.assign(ogo, options);
-        if(ogo.type === 0 || ogo.type === 'degrees'){
-            angle = Turtle.normalize(angle, {type: 'degrees'});
-            angle = Turtle.angConv(angle, {to: 'radians'});
-        }else if(ogo.type === 1 || ogo.type === 'radians'){
-            angle = Turtle.normalize(angle, {type: 'radians'});
-        }else{
-            throw 'incorrect angle type';
-        }
-        this.addToX(this.#velocity[0] * Math.cos(angle));
-        this.addToY(this.#velocity[1] * Math.sin(angle));
-        this.rotateTo(angle - Math.PI, {type: 'radians'});
-        
+        this.#posVec.add(this.#forceAdder);
+        // this.#sForces = [];
+        this.#forces = [];
+        return this.#posVec;
     }
-    rotateTo(theta, options={}){
-        this.rotate(theta - this.#degreesRotated, options);
-    }
-    rotate(theta, options){
-        let ogo = {
-            type: 0
-        }
-        if(options)Object.assign(ogo, options);
-        if(ogo.type === 0 || ogo.type === 'degrees'){
-            this.#degreesRotated += theta;
-            theta = Turtle.angConv(theta, {to: 'radians'});
-        }else if(ogo.type === 1 || ogo.type === 'radians'){
-            this.#degreesRotated += Turtle.angConv(theta, {to: 'degrees'});
-        }else{
-            throw 'incorrect angle type';
-        }
-        let ogx, ogy;
-        for(let i = 0;i<this.#xPts.length;i++){
-            ogx = this.#xPts[i]-this.#x;
-            ogy = this.#yPts[i]-this.#y;
-            let xPrime = Math.round(
-                (ogx * Math.cos(theta)) -
-                (ogy * Math.sin(theta))
-            );
-            let yPrime = Math.round(
-                (ogy * Math.cos(theta)) + 
-                (ogx * Math.sin(theta))
-            );
-            this.#xPts[i] = xPrime + this.#x;
-            this.#yPts[i] = yPrime + this.#y;
-        }
-        
-    }
-
     
-
-    addToX(x){
-        this.#trueX += x;
-        this.setX(Math.round(this.#trueX));
-    }
-    addToY(y){
-        this.#trueY += y;
-        this.setY(Math.round(this.#trueY));
-    }
-
     // setters
-    setX(x){
-        this.#x = x;
-        this.#correctPts();
+    subForce(x, y){
+        this.#sForce = V.createNew(x, y);
+        this.#sForce.sub(this.#posVec);
+        this.#sForce.normalize();
+        this.#sForce.mult(this.#velocity);
     }
-    setY(y){
-        this.#y = y;
-        this.#correctPts();
+    addForce(x, y){
+        this.#forces.push(V.createNew(x, y));
+        this.#forceAdder.addAll(...this.#forces);
+        this.#forceAdder.mult(this.#velocity);
     }
-    setSpeed(velocity){
-        this.#velocity = velocity;
-    }
-    setColor(color){
-        this.#color = color;
+    setVelocity(x, y){
+        this.#velocity = V.createNew(x, y);
     }
     // getters
-    getRadius(x, y){
-        return Math.sqrt(Math.pow(x - this.#trueX, 2) + Math.pow(y - this.#trueY, 2));
+    getDistanceTo(x, y){ //previously getRadius()
+        return Math.sqrt(Math.pow(x - this.#posVec.x, 2) + Math.pow(y - this.#posVec.y, 2));
     }
     getOriginAngleTo(x, y){
         let ogX = this.getX() - x;
@@ -137,15 +67,11 @@ export default class Turtle {
     getYTo(r, theta){
         return (r * Math.sin(theta)) - Turtle.angConv(this.#degreesRotated, {to: 'radians'});
     }
-    getX(){return this.#x;}
-    getY(){return this.#y;}
-    getW(){return this.#w;}
-    getH(){return this.#h;}
-    getColor(){return this.#color;}
-    getSpeedVector(){return this.#velocity}
+    getX(){return this.#posVec.x;}
+    getY(){return this.#posVec.y;}
+    getPosVec(){return this.#posVec;}
+    getVelocity(){return this.#velocity}
     getDegreesRotated(){return this.#degreesRotated}
-    getXPts(){return this.#xPts}
-    getYPts(){return this.#yPts}
 
     static angConv(angle, options){
         let aT = ['degrees', 'radians']
@@ -179,3 +105,5 @@ export default class Turtle {
     }
 
 }
+let turt = new Turtle({x:2, y:1, velocity:[1, 1]});
+turt.moveTurtle();

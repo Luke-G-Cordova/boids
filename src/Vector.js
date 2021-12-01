@@ -41,9 +41,6 @@ export default class Vector {
         this.y /= scalor;
         this.calculateMagnitude();
     }
-    limit(scalor){
-        this.magLimit = scalor;
-    }
     normalize(){
         this.calculateMagnitude();
         if(this.magnitude !== 0){
@@ -55,10 +52,9 @@ export default class Vector {
     }
     calculateMagnitude(){
         this.magnitude = Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
-        if(this.magLimit && this.magnitude > this.magLimit){
-            this.magnitude = this.magLimit;
-        }
         return this.magnitude;
     }
-
+    clone(){
+        return Vector.createNew(this.x, this.y);
+    }
 }

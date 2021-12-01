@@ -4,45 +4,49 @@ import {default as V} from './Vector.js';
 export default class Turtle {
     #posVec;
     #velocity;
+    #acceleration;
+    #speed;
     #forces = [];
-    #sForce;
     #degreesRotated = 0;
-    #forceAdder = V.createNew(0, 0);
+    #accelerant;
     constructor(options){
         let ogo = {
             x: 0, 
             y: 0,
-            speed: .5,
-            limit: .0001
+            speed: 5,
+            accelerant: 1
         }
         Object.assign(ogo, options);
+        this.#accelerant = ogo.accelerant;
         this.#posVec = V.createNew(ogo.x, ogo.y);
-        this.#velocity = ogo.speed;
-        this.#posVec.limit(ogo.limit);
+        this.#speed = ogo.speed;
+        this.#velocity = V.createNew(0, 0);
+        this.#acceleration = V.createNew(ogo.speed, ogo.speed);
     }
     moveTurtle(){
-        // this.#posVec.add(this.#forceAdder);
-
-        if(this.#sForce){
-            this.#forceAdder.add(this.#sForce);
+        if(this.#acceleration){
+            this.#velocity.add(this.#acceleration);
         }
-        this.#posVec.add(this.#forceAdder);
-        // this.#sForces = [];
-        this.#forces = [];
+        this.#posVec.add(this.#velocity);
+        // this.#forces = [];
         return this.#posVec;
     }
     
     // setters
     subForce(x, y){
-        this.#sForce = V.createNew(x, y);
-        this.#sForce.sub(this.#posVec);
-        this.#sForce.normalize();
-        this.#sForce.mult(this.#velocity);
+        this.#acceleration = V.createNew(x, y);
+        this.#acceleration.sub(this.#posVec);
+        this.#acceleration.normalize();
+        this.#acceleration.mult(this.#accelerant);
     }
+
+
+
+
     addForce(x, y){
-        this.#forces.push(V.createNew(x, y));
-        this.#forceAdder.addAll(...this.#forces);
-        this.#forceAdder.mult(this.#velocity);
+        this.#velocity.add(V.createNew(x, y));
+        this.#velocity.normalize();
+        this.#velocity.mult(this.#speed);
     }
     setVelocity(x, y){
         this.#velocity = V.createNew(x, y);
@@ -69,8 +73,9 @@ export default class Turtle {
     }
     getX(){return this.#posVec.x;}
     getY(){return this.#posVec.y;}
-    getPosVec(){return this.#posVec;}
-    getVelocity(){return this.#velocity}
+    getPos(){return this.#posVec;}
+    getSpeed(){return this.#speed;}
+    getVelocity(){return this.#velocity;}
     getDegreesRotated(){return this.#degreesRotated}
 
     static angConv(angle, options){

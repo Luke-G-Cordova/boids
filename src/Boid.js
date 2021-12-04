@@ -6,10 +6,11 @@ export default class Boid extends Turtle{
         super(x, y);
         let ogo = {
             ctx: null,
-            color: 'blue',
+            color: 'yellow',
             w: 10, 
             h: 20,
-            angle: 0
+            eiboh: 270, 
+            visibility: 100
         }
         Object.assign(ogo, options);
         this.ctx = ogo.ctx;
@@ -19,9 +20,52 @@ export default class Boid extends Turtle{
         this.xPts = new Array(3);
         this.yPts = new Array(3);
         this.currentAngle = this.velocity.getAngle();
+        this.eiboh = ogo.eiboh;
+        this.visibility = ogo.visibility;
         this.#initCoords();
-        this.setPts(ogo.angle);
+        this.setPts(this.currentAngle);
         return this;
+    }
+    canSee(vector){
+        let oVec = vector.clone();
+        let oPos = this.position.clone();
+        oVec.sub(oPos);
+        let oVecAng = oVec.getAngle();
+        let botAng = this.velocity.getAngle() - ((this.eiboh/2)*(Math.PI/180));
+        let topAng = this.velocity.getAngle() + ((this.eiboh/2)*(Math.PI/180));
+        console.log(botAng, topAng, oVecAng, oVec.magnitude, this.visibility);
+        return botAng < oVecAng && topAng > oVecAng && oVec.magnitude <= this.visibility;
+    }
+
+
+
+
+
+    drawVision(ctx){
+        if(ctx)this.ctx = ctx;
+        let ogStroke = this.ctx.strokeStyle;
+        this.ctx.strokeStyle = 'red';
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.position.x, this.position.y);
+        
+        this.ctx.arc(this.position.x, this.position.y, 
+            this.visibility,
+            -this.currentAngle, 
+            -this.currentAngle-((this.eiboh/2)*(Math.PI/180)),
+            true
+        );
+        this.ctx.lineTo(this.position.x, this.position.y);
+        
+        this.ctx.arc(this.position.x, this.position.y, 
+            this.visibility, 
+            -this.currentAngle,
+            -this.currentAngle + ((this.eiboh/2)*(Math.PI/180)), 
+            false
+        );
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.strokeStyle = ogStroke;
+
     }
     drawVelocity(color = this.color){
         let posX = this.position.x;
@@ -44,18 +88,18 @@ export default class Boid extends Turtle{
         if(ctx)this.ctx = ctx;
         let posX = this.position.x;
         let posY = this.position.y;
-        let ogColor = ctx.fillStyle;
-        ctx.fillStyle = this.color;
+        let ogColor = this.ctx.fillStyle;
+        this.ctx.fillStyle = this.color;
         let angle = this.velocity.getAngle();
         this.setPts(angle - this.currentAngle);
-        ctx.beginPath();
-        ctx.moveTo(this.position.x, this.position.y);
-        ctx.moveTo(this.xPts[0]+posX, this.yPts[0]+posY);
-        ctx.lineTo(this.xPts[1]+posX, this.yPts[1]+posY);
-        ctx.lineTo(this.xPts[2]+posX, this.yPts[2]+posY);
-        ctx.lineTo(this.xPts[0]+posX, this.yPts[0]+posY);
-        ctx.fill();
-        ctx.fillStyle = ogColor;
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.position.x, this.position.y);
+        this.ctx.moveTo(this.xPts[0]+posX, this.yPts[0]+posY);
+        this.ctx.lineTo(this.xPts[1]+posX, this.yPts[1]+posY);
+        this.ctx.lineTo(this.xPts[2]+posX, this.yPts[2]+posY);
+        this.ctx.lineTo(this.xPts[0]+posX, this.yPts[0]+posY);
+        this.ctx.fill();
+        this.ctx.fillStyle = ogColor;
     }
 
     setPts(angle = 0){

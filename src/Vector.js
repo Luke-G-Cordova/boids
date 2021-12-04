@@ -14,8 +14,12 @@ export default class Vector {
         return this;
     }
     addAngle(radians){
-        this.x = (this.x * Math.cos(radians) + (this.y * Math.sin(radians)));
-        this.y = (this.y * Math.cos(radians) - (this.x * Math.sin(radians)));
+        let p1 = parseFloat((this.x * Math.cos(radians)).toPrecision(10));
+        let p2 = parseFloat((this.y * Math.sin(radians)).toPrecision(10));
+        let p3 = parseFloat((this.y * Math.cos(radians)).toPrecision(10));
+        let p4 = parseFloat((this.x * Math.sin(radians)).toPrecision(10));
+        this.x = (p1 + p2);
+        this.y = (p3 - p4);
         let mag = this.magnitude;
         this.normalize();
         this.mult(mag);

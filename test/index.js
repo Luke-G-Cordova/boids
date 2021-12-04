@@ -7,26 +7,38 @@ import BoidSimulation from '../src/BoidSimulation.js';
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 let center = V.createNew(canvas.width/2, canvas.height/2);
-
-let boid = new Boid(150, 100, {
-    ctx: ctx,
+let boids = [];
+for(let i = 0;i<30;i++){
+    boids.push(
+        new Boid(
+            Math.random() * canvas.width, 
+            Math.random() * canvas.height, 
+            {
+                ctx: ctx,
+                color: 'yellow',
+                visibility: 50
+            }
+        )
+    );
+    boids[i].velocity.add(
+        V.createNew(
+            (Math.random() * 2) -1, 
+            (Math.random() * 2) -1
+        ).normalize().mult(1)
+    );
+}
+let bs = new BoidSimulation({
+    flock: boids, 
+    canvas: canvas
 });
-let boid1 = new Boid(200, 100, {
-    ctx: ctx,
-    color: 'red'
-});
-boid.velocity.add(V.createNew(10, 0));
-boid.velocity.addAngle(Math.PI);
-console.log(boid.canSee(boid1.position));
-// boid.move();
 
+let boid = new Boid(100, 100, {ctx:ctx})
+boid.addForce(V.createNew(100, 0));
+let boid1 = new Boid(100, 150, {ctx:ctx})
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
-    boid1.draw();
-    boid.draw();
-    boid.drawVision();
-    boid.drawVelocity('cyan');
+    bs.loop();
 }
 
 
@@ -42,15 +54,3 @@ function clear(ctx) {
 
 
 
-function walls(turtle){
-    if(turtle.position.x <= 100){
-        turtle.addForce(V.createNew(1, 0));
-    }else if(turtle.position.x >= canvas.width - 100){
-        turtle.addForce(V.createNew(-1, 0));
-    }
-    if(turtle.position.y <= 100){
-        turtle.addForce(V.createNew(0, 1));
-    }else if(turtle.position.y >= canvas.height - 100){
-        turtle.addForce(V.createNew(0, -1));
-    }
-}

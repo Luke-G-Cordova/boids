@@ -15,7 +15,7 @@ export default class Turtle {
             this.acceleration.add(arguments[i].clone());
         }
 
-        this.velocity.add(this.acceleration.normalize()).normalize().mult(5);
+        this.velocity.add(this.acceleration.normalize()).normalize();
     }
     subForce(vector){
         let cVector = vector.clone();

@@ -33,8 +33,28 @@ export default class Boid extends Turtle{
         let oVecAng = oVec.getAngle();
         let botAng = this.velocity.getAngle() - ((this.eiboh/2)*(Math.PI/180));
         let topAng = this.velocity.getAngle() + ((this.eiboh/2)*(Math.PI/180));
-        console.log(botAng, topAng, oVecAng, oVec.magnitude, this.visibility);
         return botAng < oVecAng && topAng > oVecAng && oVec.magnitude <= this.visibility;
+    }
+    rightOrLeft(vector){
+        let oVec = vector.clone();
+        let oPos = this.position.clone();
+        oVec.sub(oPos);
+        let oVecAng = oVec.getAngle();
+        if(oVecAng<0){
+            oVecAng += Math.PI*2;
+        }
+        let velAng = this.velocity.getAngle();
+        if(velAng<0){
+            velAng += Math.PI*2;
+        }
+        oVecAng -= velAng;
+        if(oVecAng<0){
+            oVecAng += Math.PI*2;
+        }
+        return {
+            direction: oVec.magnitude > this.visibility ? 0 : oVecAng<=Math.PI ? -1 : 1, 
+            distance: oVec.magnitude
+        };
     }
 
 

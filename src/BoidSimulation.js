@@ -6,36 +6,40 @@ import {default as V} from "../src/Vector.js";
 export default class BoidSimulation{ 
     constructor(options){
         let ogo = {
-            ctx: null,
-            flockSize: 20
+            flock: null, 
+            canvas: null
         }
         Object.assign(ogo, options);
-        this.ctx = ogo.ctx;
-        this.boids = [];
-        for(let i = 0;i<flockSize;i++){
-            boids.push(
-                new Boid(Math.random() * canvas.width, Math.random() * canvas.height, {
-                    w: 10, 
-                    h: 20, 
-                    color: 'yellow', 
-                    ctx: ctx
-                })
-            );
-            boids[i].addForce(V.createNew((Math.random() * 2)-1, (Math.random() * 2)-1));
-        }
+        this.flock = ogo.flock;
+        this.canvas = ogo.canvas;
     }
     loop(){
-        for(let i = this.boids.length;i>=0;i--){
-            for(let j = this.boids.length;j>=0;j--){
+        for(let i = this.flock.length - 1;i>=0;i--){
+            for(let j = this.flock.length - 1;j>=0;j--){
                 if(i===j)continue;
-
+                this.seperation(this.flock[i], this.flock[j]);
             }
-
-            this.boids[i].draw(this.ctx);
-            this.boids[i].move();
+            this.walls(this.flock[i]);
+            this.flock[i].move();
+            this.flock[i].draw();
+            // this.flock[i].drawVision();
         }
     }
-    seperation(boid){
-
+    seperation(boid, oBoid){
+        let rol = boid.rightOrLeft(oBoid.position);
+        let dis = rol.distance * .02;
+        boid.velocity.addAngle(.1 * dis * rol.direction);
+    }
+    walls(boid){
+        if(boid.position.x < 0){
+            boid.position.x = this.canvas.width;
+        }else if(boid.position.x > this.canvas.width){
+            boid.position.x = 0;
+        }
+        if(boid.position.y < 0){
+            boid.position.y = this.canvas.height;
+        }else if(boid.position.y > this.canvas.height){
+            boid.position.y = 0;
+        }
     }
 }

@@ -8,7 +8,7 @@ let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 let center = V.createNew(canvas.width/2, canvas.height/2);
 let boids = [];
-for(let i = 0;i<30;i++){
+for(let i = 0;i<100;i++){
     boids.push(
         new Boid(
             Math.random() * canvas.width, 

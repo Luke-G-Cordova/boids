@@ -14,12 +14,15 @@ export default class Vector {
         return this;
     }
     addAngle(radians){
-        this.x = (this.x * Math.cos(radians) - (this.y * Math.sin(radians)));
-        this.y = (this.y * Math.cos(radians) + (this.x * Math.sin(radians)));
+        this.x = (this.x * Math.cos(radians) + (this.y * Math.sin(radians)));
+        this.y = (this.y * Math.cos(radians) - (this.x * Math.sin(radians)));
         let mag = this.magnitude;
         this.normalize();
         this.mult(mag);
         return this;
+    }
+    getAngle(){
+        return Math.atan2(-this.y, this.x);
     }
     sub(vector){
         this.x -= vector.x;

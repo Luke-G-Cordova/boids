@@ -12,10 +12,10 @@ export default class Turtle {
     }
     addForce(...vector){
         for(let i = 0;i<arguments.length;i++){
-            let cVector = arguments[i].clone();
-            this.acceleration.add(cVector);
+            this.acceleration.add(arguments[i].clone());
         }
-        this.velocity.add(this.acceleration).upperLimit(50).lowerLimit(-50);
+
+        this.velocity.add(this.acceleration.normalize()).normalize().mult(5);
     }
     subForce(vector){
         let cVector = vector.clone();

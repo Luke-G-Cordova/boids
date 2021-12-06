@@ -25,24 +25,26 @@ export default class BoidSimulation{
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
                 if(rol.direction!==0){
                     let angle = this.flock[j].velocity.getAngle();
-                    if(angle<0){angle+=Math.PI*2;}
                     avgDir += angle;
                     avgPos.add(this.flock[j].position);
                     count++;
                 }
-                // newAngle += this.seperation(rol, this.flock[i].visibility);
+                newAngle += this.seperation(rol, this.flock[i].visibility);
             }
             if(count !== 0){
+                // let angle = this.flock[i].velocity.getAngle();
+                // if(angle<0){angle+=Math.PI*2;}
+                // count++;
+                // avgDir += angle;
                 avgDir /= count;
+                
                 avgPos.div(count);
-                let directionV = V.createNew(1, 0);
-                directionV.addAngle(avgDir);
+
                 // console.log(directionV.getAngle());
-                rol = this.flock[i].rightOrLeft(directionV);
-                newAngle += this.alignment(rol);
+                newAngle += this.alignment(this.flock[i], avgDir);
                 
                 rol = this.flock[i].rightOrLeft(avgPos);
-                // newAngle += this.cohesion(rol);
+                newAngle += this.cohesion(rol);
             }
             
             
@@ -56,12 +58,23 @@ export default class BoidSimulation{
         }
     }
     seperation(rol, visibility){
-        return .015 * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
+        return .01 * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
     }
-    alignment(rol){
-        // let rol = boid.rightOrLeft(avgDir);
-        // boid.velocity.addAngle(.01 * rol.direction);
-        return .05 * rol.direction;
+    alignment(boid, heading){
+        // if(heading > Math.PI){
+        //     heading -= Math.PI;
+        // }
+        let curDir = boid.velocity.getAngle();
+        let diff = heading - curDir;
+        let direction;
+        if(diff < - Math.PI){
+            diff += Math.PI*2;
+        }
+        if(diff > Math.PI){
+            diff -= Math.PI*2;
+        }
+        direction = diff > 0 ? 1 : diff < 0 ? -1 : 0;
+        return .02 * direction;
     }
     cohesion(rol){
         return -.05 * rol.direction;

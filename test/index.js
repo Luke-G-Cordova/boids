@@ -16,13 +16,14 @@ for(let i = 0;i<100;i++){
             {
                 ctx: ctx,
                 color: 'yellow',
-                visibility: 50
+                visibility: 50,
+                eiboh: 270
             }
         )
     );
     boids[i].velocity.add(
-        V.createNew(
-            (Math.random() * 2) -1, 
+        V.createNew(-1,
+            // (Math.random() * 2) -1, 
             (Math.random() * 2) -1
         ).normalize().mult(1)
     );

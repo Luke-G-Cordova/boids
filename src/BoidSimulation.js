@@ -25,6 +25,9 @@ export default class BoidSimulation{
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
                 if(rol.direction!==0){
                     let angle = this.flock[j].velocity.getAngle();
+                    if(angle<0){
+                        angle += Math.PI*2;
+                    }
                     avgDir += angle;
                     avgPos.add(this.flock[j].position);
                     count++;

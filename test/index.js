@@ -12,15 +12,26 @@ ctx.canvas.height = window.innerHeight;
 let boids = [];
 
 for(let i = 0;i<400;i++){
-    let rand = Math.round(Math.random()*2);
-
+    let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+    color = color.map((val, i, arr) => {
+        let less = 0;
+        for(let j = 0 ;j<arr.length;j++){
+            if(j===i)continue;
+            if(val < arr[j]){
+                less++;
+            }else if(val > arr[j]){
+                less--;
+            }
+        }
+        return less < 0 ? 0 : less > 0 ? 255 : val ;
+    });
     boids.push(
         new Boid(
             Math.random() * ctx.canvas.width, 
             Math.random() * ctx.canvas.height, 
             {
                 ctx: ctx,
-                color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
+                color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
                 visibility: 50,
                 eiboh: 270
             }
@@ -48,7 +59,7 @@ var speed = 1;
 var interval = setInterval(loop, speed);
 function clear(ctx) {
     let ogFill = ctx.fillStyle;
-    ctx.fillStyle = 'rgba(0,0,0,.03)';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillRect(0,0,canvas.width, canvas.height);
     ctx.fillStyle = ogFill;
 }

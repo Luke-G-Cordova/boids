@@ -24,6 +24,7 @@ export default class BoidSimulation{
             // Math.atan2(avgDirSin/amount_of_in_view_boids, avgDircos/amount_of_in_view_boids)
             let avgDirSin = 0;
             let avgDirCos = 0;
+            let avgC = [0, 0, 0];
             let count = 0;
             let newAngle = 0;
             let rol;
@@ -35,6 +36,10 @@ export default class BoidSimulation{
                     avgDirSin += Math.sin(angle);
                     avgDirCos += Math.cos(angle);
                     avgPos.add(this.flock[j].position);
+                    let col = this.flock[j].getColor();
+                    
+                    avgC = avgC.map((rgb, index) => rgb + col[index]);
+                    
                     count++;
                 }
                 newAngle += this.seperation(rol, this.flock[i].visibility);
@@ -49,6 +54,21 @@ export default class BoidSimulation{
                 
                 rol = this.flock[i].rightOrLeft(avgPos);
                 newAngle += this.cohesion(rol);
+
+                avgC = avgC.map(rgb => rgb/count);
+                avgC = avgC.map((rgb, i, arr) =>{
+                    let less = 0;
+                    for(let j = 0 ;j<arr.length;j++){
+                        if(j===i)continue;
+                        if(rgb < arr[j]){
+                            less++;
+                        }else if(rgb > arr[j]){
+                            less--;
+                        }
+                    }
+                    return less < 0 ? 0 : less > 0 ? 255 : rgb ;
+                });
+                this.flock[i].setColor(`rgba(${avgC[0]}, ${avgC[1]}, ${avgC[2]}, 1)`);
             }
             
             

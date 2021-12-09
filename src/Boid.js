@@ -58,11 +58,6 @@ export default class Boid extends Turtle{
             distance: oVec.magnitude
         };
     }
-
-
-
-
-
     drawVision(ctx){
         if(ctx)this.ctx = ctx;
         let ogStroke = this.ctx.strokeStyle;
@@ -154,5 +149,11 @@ export default class Boid extends Turtle{
 
 		this.xPts[2] = +(this.w/2);
 		this.yPts[2] = 0;
+    }
+    getColor(){
+        return this.color.split(/[rgba(),]/).filter((val) => val!=='').map(val => parseInt(val));
+    }
+    setColor(color){
+        this.color = color;
     }
 }

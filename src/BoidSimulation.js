@@ -16,7 +16,14 @@ export default class BoidSimulation{
     loop(){
         for(let i = this.flock.length - 1;i>=0;i--){
             let avgPos = V.createNew(0, 0);
-            let avgDir = 0;
+            // avgDirSin and avgDirCos are used to calculate the average
+            // angle of in view boids. avgDirSin stores the sum of the 
+            // sin angles of all in view boid velocities while avgDirCos 
+            // stores the sum of the cos angles of all in view boid velocities
+            // The average is then 
+            // Math.atan2(avgDirSin/amount_of_in_view_boids, avgDircos/amount_of_in_view_boids)
+            let avgDirSin = 0;
+            let avgDirCos = 0;
             let count = 0;
             let newAngle = 0;
             let rol;
@@ -25,26 +32,20 @@ export default class BoidSimulation{
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
                 if(rol.direction!==0){
                     let angle = this.flock[j].velocity.getAngle();
-                    if(angle<0){
-                        angle += Math.PI*2;
-                    }
-                    avgDir += angle;
+                    avgDirSin += Math.sin(angle);
+                    avgDirCos += Math.cos(angle);
                     avgPos.add(this.flock[j].position);
                     count++;
                 }
                 newAngle += this.seperation(rol, this.flock[i].visibility);
             }
             if(count !== 0){
-                // let angle = this.flock[i].velocity.getAngle();
-                // if(angle<0){angle+=Math.PI*2;}
-                // count++;
-                // avgDir += angle;
-                avgDir /= count;
+                avgDirSin /= count;
+                avgDirCos /= count;
                 
                 avgPos.div(count);
 
-                // console.log(directionV.getAngle());
-                newAngle += this.alignment(this.flock[i], avgDir);
+                newAngle += this.alignment(this.flock[i], Math.atan2(avgDirSin, avgDirCos));
                 
                 rol = this.flock[i].rightOrLeft(avgPos);
                 newAngle += this.cohesion(rol);
@@ -64,9 +65,6 @@ export default class BoidSimulation{
         return .01 * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
     }
     alignment(boid, heading){
-        // if(heading > Math.PI){
-        //     heading -= Math.PI;
-        // }
         let curDir = boid.velocity.getAngle();
         let diff = heading - curDir;
         let direction;

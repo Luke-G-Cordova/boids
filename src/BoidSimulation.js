@@ -57,6 +57,7 @@ export default class BoidSimulation{
             
             this.walls(this.flock[i]);
             this.flock[i].move();
+            // this.flock[i].drawImage();
             this.flock[i].draw();
             // this.flock[i].drawVision();
         }

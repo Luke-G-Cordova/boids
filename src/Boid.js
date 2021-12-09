@@ -10,13 +10,15 @@ export default class Boid extends Turtle{
             w: 10, 
             h: 20,
             eiboh: 270, 
-            visibility: 100
+            visibility: 100,
+            image: null
         }
         Object.assign(ogo, options);
         this.ctx = ogo.ctx;
         this.color = ogo.color;
         this.w = ogo.w;
         this.h = ogo.h;
+        this.image = ogo.image;
         this.xPts = new Array(3);
         this.yPts = new Array(3);
         this.currentAngle = this.velocity.getAngle();
@@ -120,6 +122,15 @@ export default class Boid extends Turtle{
         this.ctx.lineTo(this.xPts[0]+posX, this.yPts[0]+posY);
         this.ctx.fill();
         this.ctx.fillStyle = ogColor;
+    }
+    drawImage(ctx){
+        if(ctx)this.ctx = ctx;
+        if(!!this.image){
+            this.ctx.drawImage(this.image, this.position.x-20, this.position.y-20, 22, 40);
+        }else{
+            this.draw();
+        }
+
     }
 
     setPts(angle = 0){

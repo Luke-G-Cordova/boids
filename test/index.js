@@ -1,5 +1,5 @@
 import Turtle from "../src/Turtle.js";
-import Obstical from "../src/Obstical.js";
+import Obstacle from "../src/Obstacle.js";
 import {default as V} from "../src/Vector.js";
 import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
@@ -11,7 +11,7 @@ ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
 let boids = [];
-let obsticals = [];
+let obstacles = [];
 for(let i = 0;i<300;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
@@ -50,7 +50,7 @@ for(let i = 0;i<300;i++){
 
 let bs = new BoidSimulation({
     flock: boids,
-    obsticals: obsticals
+    obstacles: obstacles
 });
 
 ctx.fillRect(0,0,canvas.width, canvas.height);
@@ -60,8 +60,8 @@ function loop(){
         boid.move();
         walls(boid);
         boid.draw();
-    }, (obstical, obsticalsArray) => {
-        obstical.draw();
+    }, (obstacle, obstaclesArray) => {
+        obstacle.draw();
     });
 }
 var speed = 0;
@@ -80,7 +80,7 @@ window.addEventListener('mousedown', (e) => {
     //     interval = setInterval(loop, speed);
     // }
     window.onmousemove = (e) => {
-        bs.addObstical(new Obstical(e.offsetX - 10, e.offsetY - 10, {ctx: ctx}));
+        bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
     }
     window.onmouseup = (e) => {
         window.onmousemove = null;

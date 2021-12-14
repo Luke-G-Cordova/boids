@@ -1,18 +1,16 @@
 import Turtle from "./Turtle.js";
 
-export default class Obstical extends Turtle{
+export default class Obstacle extends Turtle{
     constructor(x, y, options){
         super(x, y);
         let ogo = {
             color: 'white',
             ctx: null,
-            width: 20, 
-            height: 20
+            radius: 5
         }
         Object.assign(ogo, options);
         this.color = ogo.color;
-        this.width = ogo.width;
-        this.height = ogo.height;
+        this.radius = ogo.radius;
         this.ctx = ogo.ctx;
     }
 
@@ -31,7 +29,10 @@ export default class Obstical extends Turtle{
         // this.ctx.lineTo(this.xPts[2]+posX, this.yPts[2]+posY);
         // this.ctx.lineTo(this.xPts[0]+posX, this.yPts[0]+posY);
         // this.ctx.fill();
-        this.ctx.fillRect(posX, posY, this.width, this.height);
+        this.ctx.beginPath();
+        this.ctx.arc(posX, posY, this.radius, 0, Math.PI*2);
+        // this.ctx.fillRect(posX, posY, this.width, this.height);
+        this.ctx.fill();
         this.ctx.fillStyle = ogColor;
     }
 }

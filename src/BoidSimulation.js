@@ -13,7 +13,7 @@ export default class BoidSimulation{
     constructor(options){
         let ogo = {
             flock: null,
-            obsticals: null,
+            obstacles: null,
             seperationOffset: .01,
             alignmentOffset: .02,
             cohesionOffset: .05,
@@ -21,13 +21,13 @@ export default class BoidSimulation{
         }
         Object.assign(ogo, options);
         this.flock = ogo.flock;
-        this.obsticals = ogo.obsticals;
+        this.obstacles = ogo.obstacles;
         this.seperationOffset = ogo.seperationOffset;
         this.alignmentOffset = ogo.alignmentOffset;
         this.cohesionOffset = ogo.cohesionOffset;
         this.obsticalOffset = ogo.obsticalOffset;
     }
-    loop(drawBoid, drawObsticals){
+    loop(drawBoid, drawObstacles){
         let avgPos = V.createNew(0, 0);
         let avgDirSin = 0;
         let avgDirCos = 0;
@@ -65,23 +65,23 @@ export default class BoidSimulation{
                 rol = this.flock[i].rightOrLeft(avgPos);
                 newAngle += this.cohesion(rol);
             }
-            // this block is for boids seeing other obsticals
-            for(let j = this.obsticals.length - 1;j>=0;j--){
-                rol = this.flock[i].rightOrLeft(this.obsticals[j].position);
-                newAngle += this.avoidObstical(rol, this.obsticals[j], this.flock[i].visibility);
+        // this block is for boids seeing other obstacles
+            for(let j = this.obstacles.length - 1;j>=0;j--){
+                rol = this.flock[i].rightOrLeft(this.obstacles[j].position);
+                newAngle += this.avoidObstical(rol, this.obstacles[j], this.flock[i].visibility);
             }
             this.flock[i].velocity.addAngle(newAngle);
-            drawBoid(this.flock[i], this.flock, this.obsticals);
+            drawBoid(this.flock[i], this.flock);
         }
-        for(let i = this.obsticals.length - 1;i>=0;i--){
-            drawObsticals(this.obsticals[i], this.obsticals);
+        for(let i = this.obstacles.length - 1;i>=0;i--){
+            drawObstacles(this.obstacles[i], this.obstacles);
         }
     }
     seperation(rol, visibility){
         return this.seperationOffset * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
     }
     avoidObstical(rol, obstical, visibility){
-        return this.obsticalOffset * ((visibility*.1) - ((rol.distance-(obstical.width/2))*.1)) * rol.direction;
+        return this.obsticalOffset * ((visibility*.1) - ((rol.distance-(obstical.radius))*.1)) * rol.direction;
     }
     alignment(boid, heading){
         let curDir = boid.velocity.getAngle();
@@ -99,8 +99,8 @@ export default class BoidSimulation{
         return -this.cohesionOffset * rol.direction;
     }
     
-    addObstical(obstical){
-        this.obsticals.push(obstical);
+    addObstacle(obstical){
+        this.obstacles.push(obstical);
     }
     addBoid(boid){
         this.flock.push(boid);

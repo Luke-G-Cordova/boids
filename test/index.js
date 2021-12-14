@@ -1,4 +1,5 @@
 import Turtle from "../src/Turtle.js";
+import Obstical from "../src/Obstical.js";
 import {default as V} from "../src/Vector.js";
 import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
@@ -11,7 +12,7 @@ ctx.canvas.height = window.innerHeight;
 
 let boids = [];
 let obsticals = [];
-for(let i = 0;i<400;i++){
+for(let i = 0;i<300;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -45,14 +46,7 @@ for(let i = 0;i<400;i++){
     );
     boids[i].add = 1;
 }
-for(let i = 0;i<10;i++){
-    obsticals.push(
-        new Turtle(
-            Math.random() * ctx.canvas.width, 
-            Math.random() * ctx.canvas.height
-        )
-    )
-}
+
 
 let bs = new BoidSimulation({
     flock: boids,
@@ -62,27 +56,34 @@ let bs = new BoidSimulation({
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
-    bs.loop((boid, boidArray, obstArray) => {
+    bs.loop((boid, boidArray) => {
         boid.move();
         walls(boid);
         boid.draw();
-        
+    }, (obstical, obsticalsArray) => {
+        obstical.draw();
     });
 }
 var speed = 0;
 var interval = setInterval(loop, speed);
 function clear(ctx) {
     let ogFill = ctx.fillStyle;
-    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fillStyle = 'rgba(0,0,0,.1)';
     ctx.fillRect(0,0,canvas.width, canvas.height);
     ctx.fillStyle = ogFill;
 }
-window.addEventListener('click', () => {
-    if(interval!=null){
-        clearInterval(interval);
-        interval = null;
-    }else{
-        interval = setInterval(loop, speed);
+window.addEventListener('mousedown', (e) => {
+    // if(interval!=null){
+    //     clearInterval(interval);
+    //     interval = null;
+    // }else{
+    //     interval = setInterval(loop, speed);
+    // }
+    window.onmousemove = (e) => {
+        bs.addObstical(new Obstical(e.offsetX - 10, e.offsetY - 10, {ctx: ctx}));
+    }
+    window.onmouseup = (e) => {
+        window.onmousemove = null;
     }
 });
 function walls(boid){

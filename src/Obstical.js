@@ -6,8 +6,8 @@ export default class Obstical extends Turtle{
         let ogo = {
             color: 'white',
             ctx: null,
-            width: 10, 
-            height: 10
+            width: 20, 
+            height: 20
         }
         Object.assign(ogo, options);
         this.color = ogo.color;

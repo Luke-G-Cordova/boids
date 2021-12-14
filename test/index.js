@@ -10,7 +10,7 @@ ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
 let boids = [];
-
+let obsticals = [];
 for(let i = 0;i<400;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
@@ -45,24 +45,28 @@ for(let i = 0;i<400;i++){
     );
     boids[i].add = 1;
 }
+for(let i = 0;i<10;i++){
+    obsticals.push(
+        new Turtle(
+            Math.random() * ctx.canvas.width, 
+            Math.random() * ctx.canvas.height
+        )
+    )
+}
 
 let bs = new BoidSimulation({
-    flock: boids, 
-    canvas: canvas
+    flock: boids,
+    obsticals: obsticals
 });
 
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
-    bs.loop((boid) => {
+    bs.loop((boid, boidArray, obstArray) => {
         boid.move();
+        walls(boid);
         boid.draw();
-        // boid.drawVelocity('blue');
-        // boid.add = boid.velocity.magnitude >= 50?-1:boid.velocity.magnitude<=.5?1:boid.add;
-        // boid.velocity.add(boid.velocity.clone().normalize().mult(.5 * boid.add));
-        // ctx.fillStyle = 'red';
-        // ctx.font = '48px';
-        // ctx.fillText(boid.velocity.magnitude, 100, 100);
+        
     });
 }
 var speed = 0;
@@ -80,6 +84,18 @@ window.addEventListener('click', () => {
     }else{
         interval = setInterval(loop, speed);
     }
-})
+});
+function walls(boid){
+    if(boid.position.x < 0){
+        boid.position.x = ctx.canvas.width;
+    }else if(boid.position.x > ctx.canvas.width){
+        boid.position.x = 0;
+    }
+    if(boid.position.y < 0){
+        boid.position.y = ctx.canvas.height;
+    }else if(boid.position.y > ctx.canvas.height){
+        boid.position.y = 0;
+    }
+}
 
 

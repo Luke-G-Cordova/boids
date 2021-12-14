@@ -2,19 +2,25 @@ import Boid from "../src/Boid.js";
 import {default as V} from "../src/Vector.js";
 
 
+// avgDirSin and avgDirCos are used to calculate the average
+// angle of in view boids. avgDirSin stores the sum of the 
+// sin angles of all in view boid velocities while avgDirCos 
+// stores the sum of the cos angles of all in view boid velocities
+// The average is then 
+// Math.atan2(avgDirSin/amount_of_in_view_boids, avgDircos/amount_of_in_view_boids)
 
 export default class BoidSimulation{ 
     constructor(options){
         let ogo = {
-            flock: null, 
-            canvas: null,
+            flock: null,
+            obsticals: null,
             seperationOffset: .01,
             alignmentOffset: .02,
             cohesionOffset: .05
         }
         Object.assign(ogo, options);
         this.flock = ogo.flock;
-        this.canvas = ogo.canvas;
+        this.obsticals = ogo.obsticals;
         this.seperationOffset = ogo.seperationOffset;
         this.alignmentOffset = ogo.alignmentOffset;
         this.cohesionOffset = ogo.cohesionOffset;
@@ -22,19 +28,12 @@ export default class BoidSimulation{
     loop(callback){
         for(let i = this.flock.length - 1;i>=0;i--){
             let avgPos = V.createNew(0, 0);
-            // avgDirSin and avgDirCos are used to calculate the average
-            // angle of in view boids. avgDirSin stores the sum of the 
-            // sin angles of all in view boid velocities while avgDirCos 
-            // stores the sum of the cos angles of all in view boid velocities
-            // The average is then 
-            // Math.atan2(avgDirSin/amount_of_in_view_boids, avgDircos/amount_of_in_view_boids)
             let avgDirSin = 0;
             let avgDirCos = 0;
-            let avgC = [0, 0, 0];
             let count = 0;
             let newAngle = 0;
             let rol;
-            let avgSpeed = 0;
+    // this block is boids seeing other boids
             for(let j = this.flock.length - 1;j>=0;j--){
                 if(i===j)continue;
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
@@ -43,10 +42,6 @@ export default class BoidSimulation{
                     avgDirSin += Math.sin(angle);
                     avgDirCos += Math.cos(angle);
                     avgPos.add(this.flock[j].position);
-
-                    // let col = this.flock[j].getColor();
-                    // avgC = avgC.map((rgb, index) => rgb + col[index]);
-                    
                     count++;
                 }else{continue;}
                 newAngle += this.seperation(rol, this.flock[i].visibility);
@@ -61,30 +56,13 @@ export default class BoidSimulation{
                 rol = this.flock[i].rightOrLeft(avgPos);
                 newAngle += this.cohesion(rol);
 
-                avgC = avgC.map(rgb => rgb/count);
-                avgC = avgC.map((rgb, i, arr) =>{
-                    let less = 0;
-                    for(let j = 0 ;j<arr.length;j++){
-                        if(j===i)continue;
-                        if(rgb < arr[j]){
-                            less++;
-                        }else if(rgb > arr[j]){
-                            less--;
-                        }
-                    }
-                    return less < 0 ? 0 : less > 0 ? 255 : rgb ;
-                });
-                // this.flock[i].setColor(`rgba(${avgC[0]}, ${avgC[1]}, ${avgC[2]}, 1)`);
                 this.flock[i].velocity.addAngle(newAngle);
             }
-            
-
-            callback(this.flock[i]);
-            this.walls(this.flock[i]);
-            // this.flock[i].move();
-            // this.flock[i].drawImage();
-            // this.flock[i].draw();
-            // this.flock[i].drawVision();
+    // this block is for boids seeing other obsticals
+            for(let j = this.obsticals.length - 1;j>=0;j--){
+                rol = this.flock[i].rightOrLeft(this.obsticals[j].position);
+            }
+            callback(this.flock[i], this.flock, this.obsticals);
         }
     }
     seperation(rol, visibility){
@@ -107,18 +85,7 @@ export default class BoidSimulation{
         return -this.cohesionOffset * rol.direction;
     }
     
-    walls(boid){
-        if(boid.position.x < 0){
-            boid.position.x = this.canvas.width;
-        }else if(boid.position.x > this.canvas.width){
-            boid.position.x = 0;
-        }
-        if(boid.position.y < 0){
-            boid.position.y = this.canvas.height;
-        }else if(boid.position.y > this.canvas.height){
-            boid.position.y = 0;
-        }
-    }
+    
     setSeperationOffset(seperationOffset){
         this.seperationOffset = seperationOffset;
     }

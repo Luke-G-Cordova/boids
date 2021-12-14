@@ -7,13 +7,19 @@ export default class BoidSimulation{
     constructor(options){
         let ogo = {
             flock: null, 
-            canvas: null
+            canvas: null,
+            seperationOffset: .01,
+            alignmentOffset: .02,
+            cohesionOffset: .05
         }
         Object.assign(ogo, options);
         this.flock = ogo.flock;
         this.canvas = ogo.canvas;
+        this.seperationOffset = ogo.seperationOffset;
+        this.alignmentOffset = ogo.alignmentOffset;
+        this.cohesionOffset = ogo.cohesionOffset;
     }
-    loop(){
+    loop(callback){
         for(let i = this.flock.length - 1;i>=0;i--){
             let avgPos = V.createNew(0, 0);
             // avgDirSin and avgDirCos are used to calculate the average
@@ -28,6 +34,7 @@ export default class BoidSimulation{
             let count = 0;
             let newAngle = 0;
             let rol;
+            let avgSpeed = 0;
             for(let j = this.flock.length - 1;j>=0;j--){
                 if(i===j)continue;
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
@@ -36,18 +43,17 @@ export default class BoidSimulation{
                     avgDirSin += Math.sin(angle);
                     avgDirCos += Math.cos(angle);
                     avgPos.add(this.flock[j].position);
-                    let col = this.flock[j].getColor();
-                    
-                    avgC = avgC.map((rgb, index) => rgb + col[index]);
+
+                    // let col = this.flock[j].getColor();
+                    // avgC = avgC.map((rgb, index) => rgb + col[index]);
                     
                     count++;
-                }
+                }else{continue;}
                 newAngle += this.seperation(rol, this.flock[i].visibility);
             }
             if(count !== 0){
                 avgDirSin /= count;
                 avgDirCos /= count;
-                
                 avgPos.div(count);
 
                 newAngle += this.alignment(this.flock[i], Math.atan2(avgDirSin, avgDirCos));
@@ -68,22 +74,21 @@ export default class BoidSimulation{
                     }
                     return less < 0 ? 0 : less > 0 ? 255 : rgb ;
                 });
-                this.flock[i].setColor(`rgba(${avgC[0]}, ${avgC[1]}, ${avgC[2]}, 1)`);
+                // this.flock[i].setColor(`rgba(${avgC[0]}, ${avgC[1]}, ${avgC[2]}, 1)`);
+                this.flock[i].velocity.addAngle(newAngle);
             }
             
-            
 
-            this.flock[i].velocity.addAngle(newAngle);
-            
+            callback(this.flock[i]);
             this.walls(this.flock[i]);
-            this.flock[i].move();
+            // this.flock[i].move();
             // this.flock[i].drawImage();
-            this.flock[i].draw();
+            // this.flock[i].draw();
             // this.flock[i].drawVision();
         }
     }
     seperation(rol, visibility){
-        return .01 * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
+        return this.seperationOffset * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
     }
     alignment(boid, heading){
         let curDir = boid.velocity.getAngle();
@@ -96,11 +101,12 @@ export default class BoidSimulation{
             diff -= Math.PI*2;
         }
         direction = diff > 0 ? 1 : diff < 0 ? -1 : 0;
-        return .02 * direction;
+        return this.alignmentOffset * direction;
     }
     cohesion(rol){
-        return -.05 * rol.direction;
+        return -this.cohesionOffset * rol.direction;
     }
+    
     walls(boid){
         if(boid.position.x < 0){
             boid.position.x = this.canvas.width;
@@ -112,5 +118,14 @@ export default class BoidSimulation{
         }else if(boid.position.y > this.canvas.height){
             boid.position.y = 0;
         }
+    }
+    setSeperationOffset(seperationOffset){
+        this.seperationOffset = seperationOffset;
+    }
+    setAlignmentOffset(alignmentOffset){
+        this.alignmentOffset = alignmentOffset;
+    }
+    setCohesionOffset(cohesionOffset){
+        this.cohesionOffset = cohesionOffset;
     }
 }

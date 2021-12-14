@@ -43,6 +43,7 @@ for(let i = 0;i<400;i++){
             (Math.random() * 2) -1
         ).normalize().mult(3)
     );
+    boids[i].add = 1;
 }
 
 let bs = new BoidSimulation({
@@ -53,9 +54,18 @@ let bs = new BoidSimulation({
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
-    bs.loop();
+    bs.loop((boid) => {
+        boid.move();
+        boid.draw();
+        // boid.drawVelocity('blue');
+        // boid.add = boid.velocity.magnitude >= 50?-1:boid.velocity.magnitude<=.5?1:boid.add;
+        // boid.velocity.add(boid.velocity.clone().normalize().mult(.5 * boid.add));
+        // ctx.fillStyle = 'red';
+        // ctx.font = '48px';
+        // ctx.fillText(boid.velocity.magnitude, 100, 100);
+    });
 }
-var speed = 1;
+var speed = 0;
 var interval = setInterval(loop, speed);
 function clear(ctx) {
     let ogFill = ctx.fillStyle;

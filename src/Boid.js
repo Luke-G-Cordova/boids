@@ -61,7 +61,7 @@ export default class Boid extends Turtle{
     drawVision(ctx){
         if(ctx)this.ctx = ctx;
         let ogStroke = this.ctx.strokeStyle;
-        this.ctx.strokeStyle = 'red';
+        this.ctx.strokeStyle = 'rgba(255, 0, 0, .5)';
         this.ctx.beginPath();
         this.ctx.moveTo(this.position.x, this.position.y);
         

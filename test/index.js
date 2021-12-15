@@ -9,6 +9,7 @@ let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 let boids = [];
 let obstacles = [];
@@ -34,7 +35,7 @@ for(let i = 0;i<300;i++){
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
                 visibility: 50,
-                eiboh: 270
+                eiboh: 120
             }
         )
     );
@@ -44,7 +45,8 @@ for(let i = 0;i<300;i++){
             (Math.random() * 2) -1
         ).normalize().mult(3)
     );
-    boids[i].add = 1;
+    boids[i].letter = alphabet[Math.floor(Math.random()*alphabet.length)];
+
 }
 
 
@@ -53,13 +55,21 @@ let bs = new BoidSimulation({
     obstacles: obstacles
 });
 
+
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
+    ctx.font = '20px serif';
     bs.loop((boid, boidArray) => {
         boid.move();
         walls(boid);
-        boid.draw();
+        // boid.draw();
+        ctx.save();
+        ctx.translate(boid.position.x, boid.position.y);
+        ctx.rotate(-boid.velocity.getAngle() + (Math.PI/2));
+        ctx.fillText(boid.letter, 0, 10);
+        ctx.restore();
+        // boid.drawVision();
     }, (obstacle, obstaclesArray) => {
         obstacle.draw();
     });
@@ -68,7 +78,7 @@ var speed = 0;
 var interval = setInterval(loop, speed);
 function clear(ctx) {
     let ogFill = ctx.fillStyle;
-    ctx.fillStyle = 'rgba(0,0,0,.1)';
+    ctx.fillStyle = 'rgba(255,255,255,1)';
     ctx.fillRect(0,0,canvas.width, canvas.height);
     ctx.fillStyle = ogFill;
 }

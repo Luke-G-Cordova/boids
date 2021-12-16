@@ -10,7 +10,7 @@ export default class Boid extends Turtle{
             w: 10, 
             h: 20,
             eiboh: 270, 
-            visibility: 100,
+            visibility: 50,
             image: null
         }
         Object.assign(ogo, options);
@@ -55,7 +55,8 @@ export default class Boid extends Turtle{
         }
         return {
             direction: oVec.magnitude > this.visibility ? 0 : oVecAng<=Math.PI ? -1 : 1, 
-            distance: oVec.magnitude
+            distance: oVec.magnitude,
+            direction2: oVecAng<=Math.PI ? -1 : 1
         };
     }
     drawVision(ctx){

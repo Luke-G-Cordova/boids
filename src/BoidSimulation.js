@@ -27,7 +27,7 @@ export default class BoidSimulation{
         this.cohesionOffset = ogo.cohesionOffset;
         this.obsticalOffset = ogo.obsticalOffset;
     }
-    loop(drawBoid, drawObstacles){
+    loop(drawBoid, drawObstacles, angleChanger){
         let avgPos = V.createNew(0, 0);
         let avgDirSin = 0;
         let avgDirCos = 0;
@@ -66,15 +66,23 @@ export default class BoidSimulation{
                 newAngle += this.cohesion(rol);
             }
         // this block is for boids seeing other obstacles
-            for(let j = this.obstacles.length - 1;j>=0;j--){
-                rol = this.flock[i].rightOrLeft(this.obstacles[j].position);
-                newAngle += this.avoidObstical(rol, this.obstacles[j], this.flock[i].visibility);
+            if(!!this.obstacles){
+                for(let j = this.obstacles.length - 1;j>=0;j--){
+                    rol = this.flock[i].rightOrLeft(this.obstacles[j].position);
+                    newAngle += this.avoidObstical(rol, this.obstacles[j], this.flock[i].visibility);
+                }
+            }
+            if(!!arguments[arguments.length]){
+                newAngle += angleChanger(this.flock[i]);
             }
             this.flock[i].velocity.addAngle(newAngle);
+            this.flock[i].move();
             drawBoid(this.flock[i], this.flock);
         }
-        for(let i = this.obstacles.length - 1;i>=0;i--){
-            drawObstacles(this.obstacles[i], this.obstacles);
+        if(!!this.obstacles){
+            for(let i = this.obstacles.length - 1;i>=0;i--){
+                drawObstacles(this.obstacles[i], this.obstacles);
+            }
         }
     }
     seperation(rol, visibility){
@@ -104,6 +112,14 @@ export default class BoidSimulation{
     }
     addBoid(boid){
         this.flock.push(boid);
+    }
+    deleteBoid(boid){
+        this.flock.splice(this.flock.indexOf(boid), 1);
+    }
+    performanceDeleteBoid(boid){
+        boid.velocity = V.createNew(0, 0);
+        boid.position.x = 999999;
+        boid.position.y = 999999;
     }
     
     setSeperationOffset(seperationOffset){

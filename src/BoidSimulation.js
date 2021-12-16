@@ -72,9 +72,11 @@ export default class BoidSimulation{
                     newAngle += this.avoidObstical(rol, this.obstacles[j], this.flock[i].visibility);
                 }
             }
-            if(!!arguments[arguments.length]){
+
+            if(!!angleChanger){
                 newAngle += angleChanger(this.flock[i]);
             }
+
             this.flock[i].velocity.addAngle(newAngle);
             this.flock[i].move();
             drawBoid(this.flock[i], this.flock);
@@ -115,6 +117,7 @@ export default class BoidSimulation{
     }
     deleteBoid(boid){
         this.flock.splice(this.flock.indexOf(boid), 1);
+        return this.flock.length;
     }
     performanceDeleteBoid(boid){
         boid.velocity = V.createNew(0, 0);

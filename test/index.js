@@ -57,7 +57,6 @@ ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
     bs.loop((boid, boidArray) => {
-        boid.move();
         walls(boid);
         boid.draw();
     }, (obstacle, obstaclesArray) => {

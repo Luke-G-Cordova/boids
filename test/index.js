@@ -5,9 +5,6 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-<<<<<<< HEAD
-let canvas = document.querySelector('.myCanvas');
-=======
 let canvas = document.querySelector('canvas');
 
 let sep = document.querySelector('.sep');
@@ -34,7 +31,6 @@ coh.addEventListener('input', (e) => {
     }
     bs.setCohesionOffset(num);
 });
->>>>>>> 8e171674a3a9062962ed940d95dbb79594ef7aa9
 let ctx = canvas.getContext('2d');
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;

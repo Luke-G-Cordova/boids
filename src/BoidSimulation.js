@@ -17,7 +17,7 @@ export default class BoidSimulation{
             seperationOffset: .01,
             alignmentOffset: .02,
             cohesionOffset: .05,
-            obsticalOffset: .07
+            obsticalOffset: .05
         }
         Object.assign(ogo, options);
         this.flock = ogo.flock;

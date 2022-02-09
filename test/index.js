@@ -5,14 +5,14 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let canvas = document.querySelector('canvas');
+let canvas = document.querySelector('.myCanvas');
 let ctx = canvas.getContext('2d');
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<300;i++){
+for(let i = 0;i<400;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -63,7 +63,7 @@ function loop(){
         obstacle.draw();
     });
 }
-var speed = 0;
+var speed = 15;
 var interval = setInterval(loop, speed);
 function clear(ctx) {
     let ogFill = ctx.fillStyle;
@@ -79,7 +79,7 @@ window.addEventListener('mousedown', (e) => {
     //     interval = setInterval(loop, speed);
     // }
     window.onmousemove = (e) => {
-        // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
+        bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
     }
     window.onmouseup = (e) => {
         window.onmousemove = null;

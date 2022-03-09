@@ -7,36 +7,6 @@ import BoidSimulation from '../src/BoidSimulation.js';
 
 let canvas = document.querySelector('canvas');
 
-let sep = document.querySelector('.sep');
-let sepLab = document.querySelector('.sepLab');
-let ali = document.querySelector('.ali');
-let aliLab = document.querySelector('.aliLab');
-let coh = document.querySelector('.coh');
-let cohLab = document.querySelector('.cohLab');
-sep.addEventListener('input', (e) => {
-    let num = parseFloat(sep.value);
-    if(isNaN(num)){
-        num = 0;
-    }
-    bs.setSeperationOffset(num);
-    sepLab.innerHTML = num;
-});
-ali.addEventListener('input', (e) => {
-    let num = parseFloat(ali.value);
-    if(isNaN(num)){
-        num = 0;
-    }
-    bs.setAlignmentOffset(num);
-    aliLab.innerHTML = num;
-});
-coh.addEventListener('input', (e) => {
-    let num = parseFloat(coh.value);
-    if(isNaN(num)){
-        num = 0;
-    }
-    bs.setCohesionOffset(num);
-    cohLab.innerHTML = num;
-});
 let ctx = canvas.getContext('2d');
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
@@ -44,7 +14,7 @@ let circleVector = V.createNew(200, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<300;i++){
+for(let i = 0;i<50;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -58,8 +28,8 @@ for(let i = 0;i<300;i++){
         }
         return less < 0 ? 0 : less > 0 ? 255 : val ;
     });
-    let width = Math.random() * ctx.canvas.width;
-    let height = Math.random() * ctx.canvas.height;
+    let width = Math.random() * (ctx.canvas.width/4) + (ctx.canvas.width/2);
+    let height = Math.random() * (ctx.canvas.height/8) + (ctx.canvas.height/2);
     // if(width<(ctx.canvas.width/2) + 200 && width>(ctx.canvas.width/2) -200){
     //     color[0] = 0;
     //     color[1] = 255;
@@ -73,31 +43,53 @@ for(let i = 0;i<300;i++){
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
                 visibility: 50,
-                eiboh: 90
+                eiboh: 270
             }
         )
     );
     boids[i].velocity.add(
         V.createNew(
-            (Math.random() * 2) -1, 
-            (Math.random() * 2) -1
+            -1, 
+            1
         ).normalize().mult(1)
     );
     boids[i].add = 1;
 }
 
 // let len = 100;
+for(let i = 0;i<10;i++){
+    obstacles.push(new Obstacle(
+        (ctx.canvas.width/2) + (i*20) - 30,
+        (ctx.canvas.height/2) - 50,
+        {ctx:ctx}
+    ));
+    obstacles.push(new Obstacle(
+        (ctx.canvas.width/2) + (i*20),
+        (ctx.canvas.height/2) - 50,
+        {ctx:ctx}
+    ));
+}
 // for(let i = 0;i<len;i++){
     
 //     obstacles.push(new Obstacle(
-//         circleVector.x + (ctx.canvas.width/2),
-//         circleVector.y + (ctx.canvas.height/2),
-//         {ctx: ctx}));
-    // obstacles.push(new Obstacle(
-    //     i * (ctx.canvas.width/ len),
-    //     ctx.canvas.height - 10,
-    //     {ctx: ctx}));
-//     circleVector.addAngle((Math.PI*2)/len);
+//         i * (ctx.canvas.width/len),
+//         150,
+//         {ctx:ctx}
+//     ));
+//     obstacles.push(new Obstacle(
+//         i * (ctx.canvas.width/len),
+//         0,
+//         {ctx:ctx}
+//     ));
+//     // obstacles.push(new Obstacle(
+//     //     circleVector.x + (ctx.canvas.width/2),
+//     //     circleVector.y + (ctx.canvas.height/2),
+//     //     {ctx: ctx}));
+//     // obstacles.push(new Obstacle(
+//     //     i * (ctx.canvas.width/ len),
+//     //     ctx.canvas.height - 10,
+//     //     {ctx: ctx}));
+//     // circleVector.addAngle((Math.PI*2)/len);
 // }
 
 let bs = new BoidSimulation({
@@ -105,22 +97,26 @@ let bs = new BoidSimulation({
     obstacles: obstacles
 });
 
+let step = false;
 ctx.fillRect(0,0,canvas.width, canvas.height);
+
 function loop(){
     clear(ctx);
     bs.loop((boid, boidArray) => {
         walls(boid);
         boid.draw();
         // boid.drawVision();
+        // boid.drawVision();
     }, (obstacle, obstaclesArray) => {
         obstacle.draw();
     });
 }
-var speed = 0;
-var interval = setInterval(loop, speed);
+var speed = 20;
+// var interval = setInterval(loop, speed);
+var interval = null;
 function clear(ctx) {
     let ogFill = ctx.fillStyle;
-    ctx.fillStyle = 'rgba(0,0,0,.05)';
+    ctx.fillStyle = 'rgba(255, 255, 255,1)';
     ctx.fillRect(0,0,canvas.width, canvas.height);
     ctx.fillStyle = ogFill;
 }

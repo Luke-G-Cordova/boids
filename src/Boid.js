@@ -122,7 +122,13 @@ export default class Boid extends Turtle{
     drawImage(ctx){
         if(ctx)this.ctx = ctx;
         if(!!this.image){
-            this.ctx.drawImage(this.image, this.position.x-20, this.position.y-20, 22, 40);
+            if(this.velocity.x<0){
+
+                this.ctx.drawImage(this.image, this.position.x-20, this.position.y-20, 22, 40);
+            }else{
+                this.ctx.drawImage(this.image2, this.position.x-20, this.position.y-20, 22, 40);
+
+            }
         }else{
             this.draw();
         }

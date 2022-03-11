@@ -17,7 +17,8 @@ export default class BoidSimulation{
             seperationOffset: .01,
             alignmentOffset: .02,
             cohesionOffset: .05,
-            obsticalOffset: .05
+            obsticalOffset: .05,
+            max_boid_add: 350
         }
         Object.assign(ogo, options);
         this.flock = ogo.flock;
@@ -26,6 +27,7 @@ export default class BoidSimulation{
         this.alignmentOffset = ogo.alignmentOffset;
         this.cohesionOffset = ogo.cohesionOffset;
         this.obsticalOffset = ogo.obsticalOffset;
+        this.max_boid_add = ogo.max_boid_add;
     }
     loop(drawBoid, drawObstacles, angleChanger){
         let avgPos = V.createNew(0, 0);
@@ -113,7 +115,7 @@ export default class BoidSimulation{
         this.obstacles.push(obstical);
     }
     addBoid(boid){
-        if(this.flock.length > 350){
+        if(this.flock.length > this.max_boid_add){
             this.flock.shift()
         }
         this.flock.push(boid);

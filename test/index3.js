@@ -99,8 +99,10 @@ function loop(){
             boid.position.y >= boid.nodeRect.y - dist
         ){
             boid.tag.style.color = 'white';
-            if(bs.deleteBoid(boid) < 0){
+            if(bs.deleteBoid(boid) === 0){
                 clearInterval(interval);
+                clear(ctx);
+                document.querySelector('span#wikilink').className = "appear";
             }
         }
     }, () => {
@@ -111,6 +113,7 @@ function loop(){
         return -angleAmt * rol.direction2;
     });
     angleAmt += addAmt;
+    
 }
 
 

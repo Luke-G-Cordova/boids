@@ -113,6 +113,9 @@ export default class BoidSimulation{
         this.obstacles.push(obstical);
     }
     addBoid(boid){
+        if(this.flock.length > 350){
+            this.flock.shift()
+        }
         this.flock.push(boid);
     }
     deleteBoid(boid){

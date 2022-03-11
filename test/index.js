@@ -80,13 +80,13 @@ let obstacles = [];
 //     boids[i].add = 1;
 // }
 
-let len = 200;
+let len = 100;
 for(let i = 0;i<len;i++){
     
-    // obstacles.push(new Obstacle(
-    //     circleVector.x + (ctx.canvas.width/2),
-    //     circleVector.y + (ctx.canvas.height/2),
-    //     {ctx: ctx}));
+    obstacles.push(new Obstacle(
+        circleVector.x + (ctx.canvas.width/2),
+        circleVector.y + (ctx.canvas.height/2),
+        {ctx: ctx}));
 
     obstacles.push(new Obstacle(
         i * (ctx.canvas.width / len ),
@@ -111,7 +111,7 @@ for(let i = 0;i<len;i++){
             
 
     
-    // circleVector.addAngle((Math.PI*2)/len);
+    circleVector.addAngle((Math.PI*2)/len);
 }
 
 let bs = new BoidSimulation({

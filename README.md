@@ -1,10 +1,16 @@
-<br/>
-<br/>
+
+<img src="./assets/boids_graphic1.PNG" style="display:block;margin: 0 auto">
+<img src="./assets/boids_graphic3.PNG" style="position:absolute;top:770px;left:400px;">
+<img src="./assets/boids_graphic2.PNG" style="position:absolute;transform:rotateZ(330deg);left:-30px;">
+
+
+<!-- ![boids](./assets/boids_graphic2.PNG) -->
 <br/>
 
 <h1 align="center">Boids - Luke Cordova</h1>
 
 Boids is a project that enables front end web designs to more easily incorporate boid-like animations.
+<br/>
 <br/>
 
 ## What are Boids?

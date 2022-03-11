@@ -4,7 +4,7 @@ export default class Obstacle extends Turtle{
     constructor(x, y, options){
         super(x, y);
         let ogo = {
-            color: 'white',
+            color: 'rgb(255, 255, 255, .5)',
             ctx: null,
             radius: 5
         }

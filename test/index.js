@@ -5,9 +5,10 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let seperationOffset = 0;
-let alignmentOffset = .02;
-let cohesionOffset = 0;
+let seperationOffset = .01;
+let alignmentOffset = .1;
+let cohesionOffset = .1;
+let obsticalOffset = .05;
 
 let canvas = document.querySelector('canvas');
 let sep = document.querySelector('.sep');
@@ -53,42 +54,42 @@ let circleVector = V.createNew(200, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<50;i++){
-    let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
-    color = color.map((val, i, arr) => {
-        let less = 0;
-        for(let j = 0 ;j<arr.length;j++){
-            if(j===i)continue;
-            if(val < arr[j]){
-                less++;
-            }else if(val > arr[j]){
-                less--;
-            }
-        }
-        return less < 0 ? 0 : less > 0 ? 255 : val ;
-    });
-    let width = Math.random() * ctx.canvas.width;
-    let height = Math.random() * ctx.canvas.height;
-    boids.push(
-        new Boid(
-            width, 
-            height, 
-            {
-                ctx: ctx,
-                color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-                visibility: 50,
-                eiboh: 270
-            }
-        )
-    );
-    boids[i].velocity.add(
-        V.createNew(
-            (Math.random() * 2) -1, 
-            (Math.random() * 2) -1
-        ).normalize().mult(2)
-    );
-    boids[i].add = 1;
-}
+// for(let i = 0;i<800;i++){
+//     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+//     color = color.map((val, i, arr) => {
+//         let less = 0;
+//         for(let j = 0 ;j<arr.length;j++){
+//             if(j===i)continue;
+//             if(val < arr[j]){
+//                 less++;
+//             }else if(val > arr[j]){
+//                 less--;
+//             }
+//         }
+//         return less < 0 ? 0 : less > 0 ? 255 : val ;
+//     });
+//     let width = Math.random() * ctx.canvas.width;
+//     let height = Math.random() * ctx.canvas.height;
+//     boids.push(
+//         new Boid(
+//             width, 
+//             height, 
+//             {
+//                 ctx: ctx,
+//                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
+//                 visibility: 50,
+//                 eiboh: 360
+//             }
+//         )
+//     );
+//     boids[i].velocity.add(
+//         V.createNew(
+//             (Math.random() * 2) -1, 
+//             (Math.random() * 2) -1
+//         ).normalize().mult(3)
+//     );
+//     boids[i].add = 1;
+// }
 // let len = 100;
 // for(let i = 0;i<len;i++){
     
@@ -128,7 +129,9 @@ let bs = new BoidSimulation({
     obstacles: obstacles,
     seperationOffset,
     alignmentOffset,
-    cohesionOffset
+    cohesionOffset,
+    obsticalOffset,
+    max_boid_add: 700
 });
 
 ctx.fillRect(0,0,canvas.width, canvas.height);
@@ -142,7 +145,7 @@ function loop(){
         obstacle.draw();
     });
 }
-var speed = 15;
+var speed = 0;
 var interval = setInterval(loop, speed);
 function clear(ctx) {
     let ogFill = ctx.fillStyle;
@@ -151,46 +154,51 @@ function clear(ctx) {
     ctx.fillStyle = ogFill;
 }
 
+let lastX, lastY;
 window.addEventListener('mousedown', (e) => {
-    if(interval!=null){
-        clearInterval(interval);
-        interval = null;
-    }else{
-        interval = setInterval(loop, speed);
-    }
+    // if(interval!=null){
+    //     clearInterval(interval);
+    //     interval = null;
+    // }else{
+    //     interval = setInterval(loop, speed);
+    // }
+    lastX = e.offsetX;
+    lastY = e.offsetY;
     window.onmousemove = (e) => {
         // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
-        // let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
-        // color = color.map((val, i, arr) => {
-        //     let less = 0;
-        //     for(let j = 0 ;j<arr.length;j++){
-        //         if(j===i)continue;
-        //         if(val < arr[j]){
-        //             less++;
-        //         }else if(val > arr[j]){
-        //             less--;
-        //         }
-        //     }
-        //     return less < 0 ? 0 : less > 0 ? 255 : val ;
-        // });
+        let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+        color = color.map((val, i, arr) => {
+            let less = 0;
+            for(let j = 0 ;j<arr.length;j++){
+                if(j===i)continue;
+                if(val < arr[j]){
+                    less++;
+                }else if(val > arr[j]){
+                    less--;
+                }
+            }
+            return less < 0 ? 0 : less > 0 ? 255 : val ;
+        });
         
-        // let myBoid = new Boid(
-        //     e.offsetX, 
-        //     e.offsetY, 
-        //     {
-        //         ctx: ctx,
-        //         color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-        //         visibility: 50,
-        //         eiboh: 270
-        //     }
-        // );
-        // myBoid.velocity.add(
-        //     V.createNew(
-        //         (Math.random() * 2) -1, 
-        //         (Math.random() * 2) -1
-        //     ).normalize().mult(3)
-        // );
-        // bs.addBoid(myBoid)
+        let myBoid = new Boid(
+            e.offsetX, 
+            e.offsetY, 
+            {
+                ctx: ctx,
+                color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
+                visibility: 50,
+                eiboh: 270
+            }
+        );
+        myBoid.velocity.add(
+            V.createNew(
+                e.offsetX - lastX > 0 ? 1:-1, 
+                e.offsetY - lastY> 0 ? 1:-1
+            ).normalize().mult(3)
+        );
+        bs.addBoid(myBoid)
+        lastX = e.offsetX;
+        lastY = e.offsetY;
     }
     window.onmouseup = (e) => {
         window.onmousemove = null;

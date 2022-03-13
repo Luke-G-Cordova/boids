@@ -104,14 +104,14 @@ export default class Boid extends Turtle{
     }
     draw(ctx){
         if(ctx)this.ctx = ctx;
-        let posX = this.position.x;
-        let posY = this.position.y;
+        let posX = Math.round(this.position.x);
+        let posY = Math.round(this.position.y);
         let ogColor = this.ctx.fillStyle;
         this.ctx.fillStyle = this.color;
         let angle = this.velocity.getAngle();
         this.setPts(angle - this.currentAngle);
         this.ctx.beginPath();
-        this.ctx.moveTo(this.position.x, this.position.y);
+        this.ctx.moveTo(posX, posY);
         this.ctx.moveTo(this.xPts[0]+posX, this.yPts[0]+posY);
         this.ctx.lineTo(this.xPts[1]+posX, this.yPts[1]+posY);
         this.ctx.lineTo(this.xPts[2]+posX, this.yPts[2]+posY);

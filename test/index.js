@@ -5,14 +5,23 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let canvas = document.querySelector('canvas');
+let seperationOffset = .02;
+let alignmentOffset = 0;
+let cohesionOffset = 0;
 
+let canvas = document.querySelector('canvas');
 let sep = document.querySelector('.sep');
 let sepLab = document.querySelector('.sepLab');
+sep.value = seperationOffset;
+sepLab.innerHTML = seperationOffset;
 let ali = document.querySelector('.ali');
 let aliLab = document.querySelector('.aliLab');
+ali.value = seperationOffset;
+aliLab.innerHTML = alignmentOffset;
 let coh = document.querySelector('.coh');
 let cohLab = document.querySelector('.cohLab');
+coh.value = seperationOffset;
+cohLab.innerHTML = cohesionOffset;
 sep.addEventListener('input', (e) => {
     let num = parseFloat(sep.value);
     if(isNaN(num)){
@@ -44,7 +53,7 @@ let circleVector = V.createNew(200, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<300;i++){
+for(let i = 0;i<50;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -60,11 +69,6 @@ for(let i = 0;i<300;i++){
     });
     let width = Math.random() * ctx.canvas.width;
     let height = Math.random() * ctx.canvas.height;
-    // if(width<(ctx.canvas.width/2) + 200 && width>(ctx.canvas.width/2) -200){
-    //     color[0] = 0;
-    //     color[1] = 255;
-    //     color[2] = 0;
-    // }
     boids.push(
         new Boid(
             width, 
@@ -72,8 +76,8 @@ for(let i = 0;i<300;i++){
             {
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-                visibility: 50,
-                eiboh: 90
+                visibility: 100,
+                eiboh: 270
             }
         )
     );
@@ -122,7 +126,10 @@ for(let i = 0;i<300;i++){
 
 let bs = new BoidSimulation({
     flock: boids,
-    obstacles: obstacles
+    obstacles: obstacles,
+    seperationOffset,
+    alignmentOffset,
+    cohesionOffset
 });
 
 ctx.fillRect(0,0,canvas.width, canvas.height);

@@ -14,10 +14,10 @@ export default class Vector {
         return this;
     }
     addAngle(radians){
-        let p1 = parseFloat((this.x * Math.cos(radians)).toPrecision(10));
-        let p2 = parseFloat((this.y * Math.sin(radians)).toPrecision(10));
-        let p3 = parseFloat((this.y * Math.cos(radians)).toPrecision(10));
-        let p4 = parseFloat((this.x * Math.sin(radians)).toPrecision(10));
+        let p1 = this.x * Math.cos(radians);
+        let p2 = this.y * Math.sin(radians);
+        let p3 = this.y * Math.cos(radians);
+        let p4 = this.x * Math.sin(radians);
         this.x = (p1 + p2);
         this.y = (p3 - p4);
         let mag = this.magnitude;
@@ -70,7 +70,7 @@ export default class Vector {
         return this;
     }
     #calculateMagnitude(){
-        this.magnitude = Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        this.magnitude = Math.sqrt((this.x * this.x) + (this.y * this.y));
     }
     clone(){
         return Vector.createNew(this.x, this.y);

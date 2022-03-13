@@ -7,6 +7,7 @@ let paragraph = document.querySelector('.myP');
 let font = window.getComputedStyle(paragraph, null).getPropertyValue('font');
 
 let size = font.substring(0, font.indexOf('x')+1);
+size = parseInt(size);
 font = font.substring(font.indexOf('x')+1);
 
 let canvas = document.querySelector('canvas');
@@ -109,7 +110,7 @@ function loop(){
 
     }, (boid) => {
         let rol = boid.rightOrLeft(boid.nodePosVec);
-        mySize = parseInt(size) + (rol.distance/10) + 'px';
+        mySize = size + (rol.distance/10) + 'px';
         return -angleAmt * rol.direction2;
     });
     angleAmt += addAmt;

@@ -7,8 +7,8 @@ export default class Boid extends Turtle{
         let ogo = {
             ctx: null,
             color: 'yellow',
-            w: 10, 
-            h: 20,
+            w: 5, 
+            h: 10,
             eiboh: 270, 
             visibility: 50,
             image: null

@@ -5,9 +5,9 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let seperationOffset = 0;
-let alignmentOffset = .02;
-let cohesionOffset = 0;
+let seperationOffset = .01;
+let alignmentOffset = .1;
+let cohesionOffset = .1;
 
 let canvas = document.querySelector('canvas');
 let sep = document.querySelector('.sep');
@@ -53,7 +53,7 @@ let circleVector = V.createNew(200, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<50;i++){
+for(let i = 0;i<600;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -77,7 +77,7 @@ for(let i = 0;i<50;i++){
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
                 visibility: 50,
-                eiboh: 270
+                eiboh: 360
             }
         )
     );
@@ -152,14 +152,14 @@ function clear(ctx) {
 }
 
 window.addEventListener('mousedown', (e) => {
-    if(interval!=null){
-        clearInterval(interval);
-        interval = null;
-    }else{
-        interval = setInterval(loop, speed);
-    }
+    // if(interval!=null){
+    //     clearInterval(interval);
+    //     interval = null;
+    // }else{
+    //     interval = setInterval(loop, speed);
+    // }
     window.onmousemove = (e) => {
-        // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
+        bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
         // let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
         // color = color.map((val, i, arr) => {
         //     let less = 0;

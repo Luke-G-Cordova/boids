@@ -5,8 +5,8 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let seperationOffset = .02;
-let alignmentOffset = 0;
+let seperationOffset = 0;
+let alignmentOffset = .02;
 let cohesionOffset = 0;
 
 let canvas = document.querySelector('canvas');
@@ -76,7 +76,7 @@ for(let i = 0;i<50;i++){
             {
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-                visibility: 100,
+                visibility: 50,
                 eiboh: 270
             }
         )
@@ -89,7 +89,6 @@ for(let i = 0;i<50;i++){
     );
     boids[i].add = 1;
 }
-
 // let len = 100;
 // for(let i = 0;i<len;i++){
     
@@ -153,14 +152,14 @@ function clear(ctx) {
 }
 
 window.addEventListener('mousedown', (e) => {
-    // if(interval!=null){
-    //     clearInterval(interval);
-    //     interval = null;
-    // }else{
-    //     interval = setInterval(loop, speed);
-    // }
+    if(interval!=null){
+        clearInterval(interval);
+        interval = null;
+    }else{
+        interval = setInterval(loop, speed);
+    }
     window.onmousemove = (e) => {
-        bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
+        // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
         // let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
         // color = color.map((val, i, arr) => {
         //     let less = 0;

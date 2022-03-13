@@ -28,6 +28,13 @@ export default class Boid extends Turtle{
         this.setPts(this.currentAngle);
         return this;
     }
+    drawLineTo(vector){
+        this.ctx.strokeStyle = 'white';
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.position.x, this.position.y);
+        this.ctx.lineTo(vector.x, vector.y);
+        this.ctx.stroke();
+    }
     canSee(vector){
         let oVec = vector.clone();
         let oPos = this.position.clone();
@@ -63,6 +70,9 @@ export default class Boid extends Turtle{
         if(ctx)this.ctx = ctx;
         let ogStroke = this.ctx.strokeStyle;
         this.ctx.strokeStyle = 'rgba(255, 0, 0, .5)';
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '12px serif';
+        this.ctx.fillText(Math.round(this.velocity.getAngle() * 180/Math.PI), this.position.x+5, this.position.y);
         this.ctx.beginPath();
         this.ctx.moveTo(this.position.x, this.position.y);
         

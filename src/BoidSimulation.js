@@ -49,6 +49,7 @@ export default class BoidSimulation{
                 if(i===j)continue;
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
                 if(rol.direction!==0){
+
                     angle = this.flock[j].velocity.getAngle();
                     avgDirSin += Math.sin(angle);
                     avgDirCos += Math.cos(angle);
@@ -63,6 +64,7 @@ export default class BoidSimulation{
                 avgPos.div(count);
 
                 newAngle += this.alignment(this.flock[i], Math.atan2(avgDirSin, avgDirCos));
+                
                 
                 rol = this.flock[i].rightOrLeft(avgPos);
                 newAngle += this.cohesion(rol);
@@ -98,14 +100,20 @@ export default class BoidSimulation{
     alignment(boid, heading){
         let curDir = boid.velocity.getAngle();
         let diff = heading - curDir;
+        
         if(diff < - Math.PI){
             diff += Math.PI*2;
         }
         if(diff > Math.PI){
             diff -= Math.PI*2;
         }
-        diff = diff > 0 ? 1 : diff < 0 ? -1 : 0;
-        return this.alignmentOffset * diff;
+        let hold = diff > this.alignmentOffset ? 1 : diff < -this.alignmentOffset ? -1 : 0;
+        if(diff < this.alignmentOffset && diff > -this.alignmentOffset){
+            return diff;
+        }else{
+            return this.alignmentOffset * hold;
+        }
+        
     }
     cohesion(rol){
         return -this.cohesionOffset * rol.direction;

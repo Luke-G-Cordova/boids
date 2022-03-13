@@ -29,7 +29,7 @@ export default class Boid extends Turtle{
         return this;
     }
     drawLineTo(vector){
-        this.ctx.strokeStyle = 'white';
+        this.ctx.strokeStyle = this.color;
         this.ctx.beginPath();
         this.ctx.moveTo(this.position.x, this.position.y);
         this.ctx.lineTo(vector.x, vector.y);
@@ -70,9 +70,9 @@ export default class Boid extends Turtle{
         if(ctx)this.ctx = ctx;
         let ogStroke = this.ctx.strokeStyle;
         this.ctx.strokeStyle = 'rgba(255, 0, 0, .5)';
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '12px serif';
-        this.ctx.fillText(Math.round(this.velocity.getAngle() * 180/Math.PI), this.position.x+5, this.position.y);
+        // this.ctx.fillStyle = 'white';
+        // this.ctx.font = '12px serif';
+        // this.ctx.fillText(Math.round(this.velocity.getAngle() * 180/Math.PI), this.position.x+5, this.position.y);
         this.ctx.beginPath();
         this.ctx.moveTo(this.position.x, this.position.y);
         

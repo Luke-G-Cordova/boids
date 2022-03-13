@@ -50,6 +50,8 @@ export default class BoidSimulation{
                 rol = this.flock[i].rightOrLeft(this.flock[j].position);
                 if(rol.direction!==0){
 
+                    // this.flock[i].drawLineTo(this.flock[j].position);
+
                     angle = this.flock[j].velocity.getAngle();
                     avgDirSin += Math.sin(angle);
                     avgDirCos += Math.cos(angle);

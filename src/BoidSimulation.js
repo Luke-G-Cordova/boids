@@ -100,7 +100,6 @@ export default class BoidSimulation{
     alignment(boid, heading){
         let curDir = boid.velocity.getAngle();
         let diff = heading - curDir;
-        
         if(diff < - Math.PI){
             diff += Math.PI*2;
         }
@@ -113,7 +112,6 @@ export default class BoidSimulation{
         }else{
             return this.alignmentOffset * hold;
         }
-        
     }
     cohesion(rol){
         return -this.cohesionOffset * rol.direction;

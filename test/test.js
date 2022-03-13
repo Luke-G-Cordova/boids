@@ -58,17 +58,17 @@ let bs = new BoidSimulation({
 
 ctx.fillRect(0,0,canvas.width, canvas.height);
 let start, end;
-// loop();
-// let avg = 0;
-// let times = 50;
-// for(let i = 0;i<times;i++){
-//     start = window.performance.now();
-//     loop();
-//     end = window.performance.now();
-//     avg += (end - start);
-// }
-// console.log(avg / times);
-// console.log(avg);
+loop();
+let avg = 0;
+let times = 50;
+for(let i = 0;i<times;i++){
+    start = window.performance.now();
+    loop();
+    end = window.performance.now();
+    avg += (end - start);
+}
+console.log(avg / times);
+console.log(avg);
 
 // start = window.performance.now();
 // loop();
@@ -86,8 +86,8 @@ function loop(){
         obstacle.draw();
     });
 }
-var speed = 15;
-var interval = setInterval(loop, speed);
+// var speed = 15;
+// var interval = setInterval(loop, speed);
 
 
 function clear(ctx) {

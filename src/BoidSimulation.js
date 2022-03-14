@@ -15,7 +15,7 @@ export default class BoidSimulation{
             flock: null,
             obstacles: null,
             seperationOffset: .01,
-            alignmentOffset: .02,
+            alignmentOffset: .05,
             cohesionOffset: .05,
             obstacleOffset: .05,
             max_boid_add: 350

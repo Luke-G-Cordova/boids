@@ -5,9 +5,9 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let seperationOffset = .05;
-let alignmentOffset = .05;
-let cohesionOffset = .05;
+let seperationOffset = .01;
+let alignmentOffset = .2;
+let cohesionOffset = .15;
 let obstacleOffset = .05;
 
 let canvas = document.querySelector('canvas');
@@ -89,8 +89,8 @@ for(let i = 0;i<500;i++){
             {
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-                visibility: 50,
-                eiboh: 270,
+                visibility: 100,
+                eiboh: 90,
                 w:5,
                 h:10
             }

@@ -57,7 +57,7 @@ for(let i = 0, k = 0;i<lettersLength;i++){
             V.createNew(
                 (Math.random() * 2) -1, 
                 (Math.random() * 2) -1
-            ).normalize().mult(3)
+            ).normalize().mult(2)
         );
         boids[k].tag = letters[k];
         let range = document.createRange();

@@ -5,10 +5,10 @@ import Boid from "../src/Boid.js";
 import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
-let seperationOffset = .02;
-let alignmentOffset = .5;
-let cohesionOffset = .5;
-let obsticalOffset = .05;
+let seperationOffset = .05;
+let alignmentOffset = .05;
+let cohesionOffset = .05;
+let obstacleOffset = .05;
 
 let canvas = document.querySelector('canvas');
 let sep = document.querySelector('.sep');
@@ -23,6 +23,10 @@ let coh = document.querySelector('.coh');
 let cohLab = document.querySelector('.cohLab');
 coh.value = seperationOffset;
 cohLab.innerHTML = cohesionOffset;
+let obs = document.querySelector('.obs');
+let obsLab = document.querySelector('.obsLab');
+obs.value = obstacleOffset;
+obsLab.innerHTML = obstacleOffset;
 sep.addEventListener('input', (e) => {
     let num = parseFloat(sep.value);
     if(isNaN(num)){
@@ -47,14 +51,22 @@ coh.addEventListener('input', (e) => {
     bs.setCohesionOffset(num);
     cohLab.innerHTML = num;
 });
+obs.addEventListener('input', (e) => {
+    let num = parseFloat(obs.value);
+    if(isNaN(num)){
+        num = 0;
+    }
+    bs.setObstacleOffset(num);
+    obsLab.innerHTML = num;
+});
 let ctx = canvas.getContext('2d');
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
-let circleVector = V.createNew(200, 0);
+let circleVector = V.createNew(40, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<1000;i++){
+for(let i = 0;i<500;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -78,7 +90,9 @@ for(let i = 0;i<1000;i++){
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
                 visibility: 50,
-                eiboh: 360
+                eiboh: 270,
+                w:5,
+                h:10
             }
         )
     );
@@ -86,43 +100,23 @@ for(let i = 0;i<1000;i++){
         V.createNew(
             (Math.random() * 2) -1, 
             (Math.random() * 2) -1
-        ).normalize().mult(3)
+        ).normalize().mult(2)
     );
     boids[i].add = 1;
 }
-// let len = 100;
-// for(let i = 0;i<len;i++){
-    
-//     obstacles.push(new Obstacle(
-//         circleVector.x + (ctx.canvas.width/2),
-//         circleVector.y + (ctx.canvas.height/2),
-//         {ctx: ctx}));
+for(let j = 0;j<15;j++){
+    let w = Math.random() * ctx.canvas.width;
+    let h = Math.random() * ctx.canvas.height;
+    let len = 20;
+    for(let i = 0;i<len;i++){
+        obstacles.push(new Obstacle(
+            circleVector.x + w,
+            circleVector.y + h,
+            {ctx: ctx}));
+        circleVector.addAngle((Math.PI*2)/len);
+    }
+}
 
-//     obstacles.push(new Obstacle(
-//         i * (ctx.canvas.width / len ),
-//         ctx.canvas.height - 10,
-//         {ctx: ctx})
-//     );
-//     obstacles.push(new Obstacle(
-//         i * (ctx.canvas.width / len ),
-//         10,
-//         {ctx: ctx})
-//     );
-//     obstacles.push(new Obstacle(
-//         10,
-//         i * (ctx.canvas.height / len),
-//         {ctx: ctx})
-//     );
-//     obstacles.push(new Obstacle(
-//         ctx.canvas.width - 10,
-//         i * (ctx.canvas.height / len),
-//         {ctx: ctx})
-//     );
-            
-
-    
-//     circleVector.addAngle((Math.PI*2)/len);
-// }
 
 let bs = new BoidSimulation({
     flock: boids,
@@ -130,7 +124,7 @@ let bs = new BoidSimulation({
     seperationOffset,
     alignmentOffset,
     cohesionOffset,
-    obsticalOffset,
+    obstacleOffset,
     max_boid_add: 500
 });
 
@@ -164,45 +158,45 @@ window.addEventListener('mousedown', (e) => {
     // }
     // lastX = e.offsetX;
     // lastY = e.offsetY;
-    // window.onmousemove = (e) => {
-    //     // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
-    //     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
-    //     color = color.map((val, i, arr) => {
-    //         let less = 0;
-    //         for(let j = 0 ;j<arr.length;j++){
-    //             if(j===i)continue;
-    //             if(val < arr[j]){
-    //                 less++;
-    //             }else if(val > arr[j]){
-    //                 less--;
-    //             }
-    //         }
-    //         return less < 0 ? 0 : less > 0 ? 255 : val ;
-    //     });
+    window.onmousemove = (e) => {
+        // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
+        // let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+        // color = color.map((val, i, arr) => {
+        //     let less = 0;
+        //     for(let j = 0 ;j<arr.length;j++){
+        //         if(j===i)continue;
+        //         if(val < arr[j]){
+        //             less++;
+        //         }else if(val > arr[j]){
+        //             less--;
+        //         }
+        //     }
+        //     return less < 0 ? 0 : less > 0 ? 255 : val ;
+        // });
         
-    //     let myBoid = new Boid(
-    //         e.offsetX, 
-    //         e.offsetY, 
-    //         {
-    //             ctx: ctx,
-    //             color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-    //             visibility: 50,
-    //             eiboh: 270
-    //         }
-    //     );
-    //     myBoid.velocity.add(
-    //         V.createNew(
-    //             e.offsetX - lastX > 0 ? 1:-1, 
-    //             e.offsetY - lastY> 0 ? 1:-1
-    //         ).normalize().mult(3)
-    //     );
-    //     bs.addBoid(myBoid)
-    //     lastX = e.offsetX;
-    //     lastY = e.offsetY;
-    // }
-    // window.onmouseup = (e) => {
-    //     window.onmousemove = null;
-    // }
+        // let myBoid = new Boid(
+        //     e.offsetX, 
+        //     e.offsetY, 
+        //     {
+        //         ctx: ctx,
+        //         color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
+        //         visibility: 50,
+        //         eiboh: 270
+        //     }
+        // );
+        // myBoid.velocity.add(
+        //     V.createNew(
+        //         e.offsetX - lastX > 0 ? 1:-1, 
+        //         e.offsetY - lastY> 0 ? 1:-1
+        //     ).normalize().mult(3)
+        // );
+        // bs.addBoid(myBoid)
+        // lastX = e.offsetX;
+        // lastY = e.offsetY;
+    }
+    window.onmouseup = (e) => {
+        window.onmousemove = null;
+    }
 });
 
 function walls(boid){

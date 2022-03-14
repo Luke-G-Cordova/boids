@@ -17,7 +17,7 @@ export default class BoidSimulation{
             seperationOffset: .01,
             alignmentOffset: .02,
             cohesionOffset: .05,
-            obsticalOffset: .05,
+            obstacleOffset: .05,
             max_boid_add: 350
         }
         Object.assign(ogo, options);
@@ -26,7 +26,7 @@ export default class BoidSimulation{
         this.seperationOffset = ogo.seperationOffset;
         this.alignmentOffset = ogo.alignmentOffset;
         this.cohesionOffset = ogo.cohesionOffset;
-        this.obsticalOffset = ogo.obsticalOffset;
+        this.obstacleOffset = ogo.obstacleOffset;
         this.max_boid_add = ogo.max_boid_add;
     }
     loop(drawBoid, drawObstacles, angleChanger){
@@ -64,18 +64,18 @@ export default class BoidSimulation{
                 avgDirSin /= count;
                 avgDirCos /= count;
                 avgPos.div(count);
-
+                
                 newAngle += this.alignment(this.flock[i], Math.atan2(avgDirSin, avgDirCos));
                 
                 
                 rol = this.flock[i].rightOrLeft(avgPos);
-                newAngle += this.cohesion(rol);
+                newAngle += this.cohesion(rol, this.flock[i].visibility);
             }
         // this block is for boids seeing other obstacles
             if(!!this.obstacles){
                 for(let j = this.obstacles.length - 1;j>=0;j--){
                     rol = this.flock[i].rightOrLeft(this.obstacles[j].position);
-                    newAngle += this.avoidObstical(rol, this.obstacles[j], this.flock[i].visibility);
+                    newAngle += this.avoidobstacle(rol, this.obstacles[j], this.flock[i].visibility);
                 }
             }
 
@@ -94,10 +94,11 @@ export default class BoidSimulation{
         }
     }
     seperation(rol, visibility){
-        return this.seperationOffset * ((visibility*.1) - (rol.distance*.1)) * rol.direction;
+        // console.log((visibility) - (rol.distance));
+        return this.seperationOffset * this.scale((visibility - rol.distance), 0, visibility, 0, Math.PI*2) * rol.direction;
     }
-    avoidObstical(rol, obstical, visibility){
-        return this.obsticalOffset * ((visibility*.1) - ((rol.distance-(obstical.radius))*.1)) * rol.direction;
+    avoidobstacle(rol, obstacle, visibility){
+        return this.obstacleOffset * this.scale((visibility - rol.distance), 0, visibility, 0, Math.PI*2) * rol.direction;
     }
     alignment(boid, heading){
         let curDir = boid.velocity.getAngle();
@@ -115,12 +116,12 @@ export default class BoidSimulation{
             return this.alignmentOffset * hold;
         }
     }
-    cohesion(rol){
-        return -this.cohesionOffset * rol.direction;
+    cohesion(rol, visibility){
+        return -this.cohesionOffset * this.scale((rol.distance), 0, visibility, 0, Math.PI*2) * rol.direction;
     }
     
-    addObstacle(obstical){
-        this.obstacles.push(obstical);
+    addObstacle(obstacle){
+        this.obstacles.push(obstacle);
     }
     addBoid(boid){
         if(this.flock.length > this.max_boid_add){
@@ -146,5 +147,11 @@ export default class BoidSimulation{
     }
     setCohesionOffset(cohesionOffset){
         this.cohesionOffset = cohesionOffset;
+    }
+    setObstacleOffset(obstacleOffset){
+        this.obstacleOffset = obstacleOffset;
+    }
+    scale(number, inMin, inMax, outMin, outMax) {
+        return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
 }

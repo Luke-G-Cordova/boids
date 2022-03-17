@@ -8,7 +8,7 @@ import BoidSimulation from '../src/BoidSimulation.js';
 let seperationOffset = .01;
 let alignmentOffset = .2;
 let cohesionOffset = .15;
-let obstacleOffset = .2;
+let obstacleOffset = .05;
 
 let canvas = document.querySelector('canvas');
 let sep = document.querySelector('.sep');
@@ -106,18 +106,18 @@ for(let i = 0;i<500;i++){
 }
 
 
-// for(let j = 0;j<15;j++){
-//     let w = Math.random() * ctx.canvas.width;
-//     let h = Math.random() * ctx.canvas.height;
-//     let len = 20;
-//     for(let i = 0;i<len;i++){
-//         obstacles.push(new Obstacle(
-//             circleVector.x + w,
-//             circleVector.y + h,
-//             {ctx: ctx}));
-//         circleVector.addAngle((Math.PI*2)/len);
-//     }
-// }
+for(let j = 0;j<15;j++){
+    let w = Math.random() * ctx.canvas.width;
+    let h = Math.random() * ctx.canvas.height;
+    let len = 20;
+    for(let i = 0;i<len;i++){
+        obstacles.push(new Obstacle(
+            circleVector.x + w,
+            circleVector.y + h,
+            {ctx: ctx}));
+        circleVector.addAngle((Math.PI*2)/len);
+    }
+}
 
 
 let bs = new BoidSimulation({
@@ -137,7 +137,6 @@ let pred = new Boid(0, ctx.canvas.height/2, {
     h:30
 });
 
-pred.velocity.add(V.createNew(1, 0));
 
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
@@ -148,9 +147,6 @@ function loop(){
         // boid.drawVision();
     }, (obstacle, obstaclesArray) => {
         obstacle.draw();
-    }, (boid) => {
-        let rol = boid.rightOrLeft(pred.position);
-        return obstacleOffset * scale((boid.visibility - rol.distance), 0, boid.visibility, 0, Math.PI*2) * rol.direction;
     });
     walls(pred);
     pred.move();

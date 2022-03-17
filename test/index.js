@@ -8,7 +8,7 @@ import BoidSimulation from '../src/BoidSimulation.js';
 let seperationOffset = .01;
 let alignmentOffset = .2;
 let cohesionOffset = .15;
-let obstacleOffset = .05;
+let obstacleOffset = .2;
 
 let canvas = document.querySelector('canvas');
 let sep = document.querySelector('.sep');
@@ -104,18 +104,20 @@ for(let i = 0;i<500;i++){
     );
     boids[i].add = 1;
 }
-for(let j = 0;j<15;j++){
-    let w = Math.random() * ctx.canvas.width;
-    let h = Math.random() * ctx.canvas.height;
-    let len = 20;
-    for(let i = 0;i<len;i++){
-        obstacles.push(new Obstacle(
-            circleVector.x + w,
-            circleVector.y + h,
-            {ctx: ctx}));
-        circleVector.addAngle((Math.PI*2)/len);
-    }
-}
+
+
+// for(let j = 0;j<15;j++){
+//     let w = Math.random() * ctx.canvas.width;
+//     let h = Math.random() * ctx.canvas.height;
+//     let len = 20;
+//     for(let i = 0;i<len;i++){
+//         obstacles.push(new Obstacle(
+//             circleVector.x + w,
+//             circleVector.y + h,
+//             {ctx: ctx}));
+//         circleVector.addAngle((Math.PI*2)/len);
+//     }
+// }
 
 
 let bs = new BoidSimulation({
@@ -128,6 +130,15 @@ let bs = new BoidSimulation({
     max_boid_add: 500
 });
 
+let pred = new Boid(0, ctx.canvas.height/2, {
+    ctx:ctx,
+    color: 'red',
+    w:15,
+    h:30
+});
+
+pred.velocity.add(V.createNew(1, 0));
+
 ctx.fillRect(0,0,canvas.width, canvas.height);
 function loop(){
     clear(ctx);
@@ -137,7 +148,13 @@ function loop(){
         // boid.drawVision();
     }, (obstacle, obstaclesArray) => {
         obstacle.draw();
+    }, (boid) => {
+        let rol = boid.rightOrLeft(pred.position);
+        return obstacleOffset * scale((boid.visibility - rol.distance), 0, boid.visibility, 0, Math.PI*2) * rol.direction;
     });
+    walls(pred);
+    pred.move();
+    pred.draw();
 }
 var speed = 0;
 var interval = setInterval(loop, speed);
@@ -160,39 +177,39 @@ window.addEventListener('mousedown', (e) => {
     // lastY = e.offsetY;
     window.onmousemove = (e) => {
         // bs.addObstacle(new Obstacle(e.offsetX, e.offsetY, {ctx: ctx}));
-        // let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
-        // color = color.map((val, i, arr) => {
-        //     let less = 0;
-        //     for(let j = 0 ;j<arr.length;j++){
-        //         if(j===i)continue;
-        //         if(val < arr[j]){
-        //             less++;
-        //         }else if(val > arr[j]){
-        //             less--;
-        //         }
-        //     }
-        //     return less < 0 ? 0 : less > 0 ? 255 : val ;
-        // });
+    //     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+    //     color = color.map((val, i, arr) => {
+    //         let less = 0;
+    //         for(let j = 0 ;j<arr.length;j++){
+    //             if(j===i)continue;
+    //             if(val < arr[j]){
+    //                 less++;
+    //             }else if(val > arr[j]){
+    //                 less--;
+    //             }
+    //         }
+    //         return less < 0 ? 0 : less > 0 ? 255 : val ;
+    //     });
         
-        // let myBoid = new Boid(
-        //     e.offsetX, 
-        //     e.offsetY, 
-        //     {
-        //         ctx: ctx,
-        //         color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-        //         visibility: 50,
-        //         eiboh: 270
-        //     }
-        // );
-        // myBoid.velocity.add(
-        //     V.createNew(
-        //         e.offsetX - lastX > 0 ? 1:-1, 
-        //         e.offsetY - lastY> 0 ? 1:-1
-        //     ).normalize().mult(3)
-        // );
-        // bs.addBoid(myBoid)
-        // lastX = e.offsetX;
-        // lastY = e.offsetY;
+    //     let myBoid = new Boid(
+    //         e.offsetX, 
+    //         e.offsetY, 
+    //         {
+    //             ctx: ctx,
+    //             color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
+    //             visibility: 50,
+    //             eiboh: 270
+    //         }
+    //     );
+    //     myBoid.velocity.add(
+    //         V.createNew(
+    //             e.offsetX - lastX > 0 ? 1:-1, 
+    //             e.offsetY - lastY> 0 ? 1:-1
+    //         ).normalize().mult(3)
+    //     );
+    //     bs.addBoid(myBoid)
+    //     lastX = e.offsetX;
+    //     lastY = e.offsetY;
     }
     window.onmouseup = (e) => {
         window.onmousemove = null;
@@ -213,3 +230,6 @@ function walls(boid){
 }
 
 
+function scale(number, inMin, inMax, outMin, outMax) {
+    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}

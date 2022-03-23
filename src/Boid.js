@@ -1,17 +1,19 @@
-import Turtle from "./Turtle.js";
-import {default as V} from "../src/Vector.js";
+import {default as V} from "./Vector.js";
 
-export default class Boid extends Turtle{
+export default class Boid{
     constructor(x, y, options){
-        super(x, y);
+        this.position = V.createNew(x, y);
+        this.velocity = V.createRandom(-1, 1);
+        this.acceleration = V.createNew(0, 0);
         let ogo = {
             ctx: null,
             color: 'yellow',
             w: 10, 
             h: 20,
-            eiboh: 270, 
-            visibility: 50,
-            image: null
+            eiboh: 360, 
+            visibility: 100,
+            image: null,
+            maxSpeed: 3
         }
         Object.assign(ogo, options);
         this.ctx = ogo.ctx;
@@ -23,10 +25,22 @@ export default class Boid extends Turtle{
         this.yPts = new Array(3);
         this.currentAngle = this.velocity.getAngle();
         this.eiboh = ogo.eiboh;
+        this.eibohR = ogo.eiboh * Math.PI/180;
         this.visibility = ogo.visibility;
+        this.maxSpeed = ogo.maxSpeed;
         this.#initCoords();
         this.setPts(this.currentAngle);
         return this;
+    }
+    move(){
+        this.velocity.add(this.acceleration);
+        this.velocity.upperLimit(this.maxSpeed);
+        this.velocity.lowerLimit(1);
+        this.position.add(this.velocity);
+        this.acceleration.mult(0);
+    }
+    applyForce(vector){
+        this.acceleration.add(vector);
     }
     drawLineTo(vector){
         this.ctx.strokeStyle = this.color;
@@ -39,10 +53,11 @@ export default class Boid extends Turtle{
         let oVec = vector.clone();
         let oPos = this.position.clone();
         oVec.sub(oPos);
+        let tVecUp = this.velocity.clone().addAngle((this.eiboh/2) * Math.PI/180);
+        let tVecDown = this.velocity.clone().addAngle(-(this.eiboh/2) * Math.PI/180);
+        oVec.addAngle(-this.velocity.getAngle());
         let oVecAng = oVec.getAngle();
-        let botAng = this.velocity.getAngle() - ((this.eiboh/2)*(Math.PI/180));
-        let topAng = this.velocity.getAngle() + ((this.eiboh/2)*(Math.PI/180));
-        return botAng < oVecAng && topAng > oVecAng && oVec.magnitude <= this.visibility;
+        return ((oVecAng >= 0 && oVecAng <= this.eibohR/2) || (oVecAng < 0 && oVecAng >= -this.eibohR/2)) && oVec.magnitude <= this.visibility;
     }
     rightOrLeft(vector){
         let oVec = vector.clone();

@@ -2,12 +2,11 @@ import Turtle from "../src/Turtle.js";
 import Obstacle from "../src/Obstacle.js";
 import {default as V} from "../src/Vector.js";
 import Boid from "../src/Boid.js";
-import Flock from "../src/Flock.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
 let seperationOffset = .01;
-let alignmentOffset = .2;
-let cohesionOffset = .15;
+let alignmentOffset = 0//.2;
+let cohesionOffset = 0//.15;
 let obstacleOffset = .05;
 
 let canvas = document.querySelector('canvas');
@@ -66,7 +65,7 @@ let circleVector = V.createNew(40, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<500;i++){
+for(let i = 0;i<5;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -89,10 +88,10 @@ for(let i = 0;i<500;i++){
             {
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-                visibility: 100,
-                eiboh: 90,
-                w:5,
-                h:10
+                visibility: 150,
+                eiboh: 20,
+                w:15,
+                h:30
             }
         )
     );
@@ -100,24 +99,24 @@ for(let i = 0;i<500;i++){
         V.createNew(
             (Math.random() * 2) -1, 
             (Math.random() * 2) -1
-        ).normalize().mult(2)
+        ).normalize().mult(1)
     );
     boids[i].add = 1;
 }
 
 
-for(let j = 0;j<15;j++){
-    let w = Math.random() * ctx.canvas.width;
-    let h = Math.random() * ctx.canvas.height;
-    let len = 20;
-    for(let i = 0;i<len;i++){
-        obstacles.push(new Obstacle(
-            circleVector.x + w,
-            circleVector.y + h,
-            {ctx: ctx}));
-        circleVector.addAngle((Math.PI*2)/len);
-    }
-}
+// for(let j = 0;j<15;j++){
+//     let w = Math.random() * ctx.canvas.width;
+//     let h = Math.random() * ctx.canvas.height;
+//     let len = 20;
+//     for(let i = 0;i<len;i++){
+//         obstacles.push(new Obstacle(
+//             circleVector.x + w,
+//             circleVector.y + h,
+//             {ctx: ctx}));
+//         circleVector.addAngle((Math.PI*2)/len);
+//     }
+// }
 
 
 let bs = new BoidSimulation({
@@ -144,7 +143,7 @@ function loop(){
     bs.loop((boid, boidArray) => {
         walls(boid);
         boid.draw();
-        // boid.drawVision();
+        boid.drawVision();
     }, (obstacle, obstaclesArray) => {
         obstacle.draw();
     });

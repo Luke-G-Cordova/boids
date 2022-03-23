@@ -1,5 +1,4 @@
-import Boid from "../src/Boid.js";
-import {default as V} from "../src/Vector.js";
+import {default as V} from "./Vector.js";
 
 
 // avgDirSin and avgDirCos are used to calculate the average

@@ -5,8 +5,8 @@ import Boid from "../src/Boid.js";
 import BoidSimulation from '../src/BoidSimulation.js';
 
 let seperationOffset = .01;
-let alignmentOffset = 0//.2;
-let cohesionOffset = 0//.15;
+let alignmentOffset = .2;
+let cohesionOffset = .15;
 let obstacleOffset = .05;
 
 let canvas = document.querySelector('canvas');
@@ -65,7 +65,7 @@ let circleVector = V.createNew(40, 0);
 
 let boids = [];
 let obstacles = [];
-for(let i = 0;i<5;i++){
+for(let i = 0;i<500;i++){
     let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
     color = color.map((val, i, arr) => {
         let less = 0;
@@ -88,10 +88,8 @@ for(let i = 0;i<5;i++){
             {
                 ctx: ctx,
                 color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
-                visibility: 150,
-                eiboh: 20,
-                w:15,
-                h:30
+                w:5,
+                h:10
             }
         )
     );
@@ -143,7 +141,6 @@ function loop(){
     bs.loop((boid, boidArray) => {
         walls(boid);
         boid.draw();
-        boid.drawVision();
     }, (obstacle, obstaclesArray) => {
         obstacle.draw();
     });

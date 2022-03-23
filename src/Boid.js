@@ -10,10 +10,11 @@ export default class Boid{
             color: 'yellow',
             w: 10, 
             h: 20,
-            eiboh: 360, 
+            eiboh: 270, 
             visibility: 100,
             image: null,
-            maxSpeed: 3
+            maxSpeed: 3,
+            minSpeed:0
         }
         Object.assign(ogo, options);
         this.ctx = ogo.ctx;
@@ -28,6 +29,7 @@ export default class Boid{
         this.eibohR = ogo.eiboh * Math.PI/180;
         this.visibility = ogo.visibility;
         this.maxSpeed = ogo.maxSpeed;
+        this.minSpeed = ogo.minSpeed;
         this.#initCoords();
         this.setPts(this.currentAngle);
         return this;
@@ -35,7 +37,7 @@ export default class Boid{
     move(){
         this.velocity.add(this.acceleration);
         this.velocity.upperLimit(this.maxSpeed);
-        this.velocity.lowerLimit(1);
+        this.velocity.lowerLimit(this.minSpeed);
         this.position.add(this.velocity);
         this.acceleration.mult(0);
     }

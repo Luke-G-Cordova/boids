@@ -13,7 +13,7 @@ export default class BoidSimulation{
     constructor(options){
         let ogo = {
             flock: null,
-            seperationOffset: .01,
+            seperationOffset: .05,
             alignmentOffset: .05,
             cohesionOffset: .05,
             max_boid_add: 350
@@ -32,38 +32,63 @@ export default class BoidSimulation{
 
 
             let seperateSteer = V.createNew(0, 0);
-            let seperateCount = 0;
+            let alignSum = V.createNew(0, 0);
+            let cohesionSum = V.createNew(0, 0);
+            let count = 0;
             for(let j = 0;j<this.flockSize;j++){
                 if(this.flock[i].canSee(this.flock[j].position)){
-                    // seperate
+                    
                     let difference = this.flock[i].position.clone();
                     difference.sub(this.flock[j].position);
                     let distance = difference.magnitude;
                     if(distance > 0){
                         difference.normalize();
                         difference.div(distance);
+                        // seperate
                         seperateSteer.add(difference);
-                        seperateCount++;
+                        // align
+                        alignSum.add(this.flock[j].velocity);
+                        // cohesion
+                        cohesionSum.add(this.flock[j].position);
+                        count++;
                     }
                 }
             }
-            if(seperateCount > 0){
-                seperateSteer.div(seperateCount);
+            if(count > 0){
+                // seperate
+                seperateSteer.div(count);
+                if(seperateSteer.magnitude > 0){
+                    seperateSteer.normalize();
+                    seperateSteer.mult(this.flock[i].maxSpeed);
+                    seperateSteer.sub(this.flock[i].velocity);
+                    seperateSteer.upperLimit(this.seperationOffset);
+                }
+                // align
+                alignSum.div(count);
+                alignSum.normalize();
+                alignSum.mult(this.flock[i].maxSpeed);
+                alignSum.sub(this.flock[i].velocity);
+                alignSum.upperLimit(this.alignmentOffset);
+
+                // cohesion
+                cohesionSum.div(count);
+                cohesionSum.sub(this.flock[i].position);
+                cohesionSum.normalize();
+                cohesionSum.mult(this.flock[i].maxSpeed);
+                cohesionSum.sub(this.flock[i].velocity);
+                cohesionSum.upperLimit(this.cohesionOffset);
+            }else{
+                alignSum = V.createNew(0, 0);
+                cohesionSum = V.createNew(0, 0);
             }
-            if(seperateSteer.magnitude > 0){
-                seperateSteer.normalize();
-                seperateSteer.mult(this.flock[i].maxSpeed);
-                seperateSteer.sub(this.flock[i].velocity);
-                seperateSteer.upperLimit(.05);
-            }
 
-
-
-            this.flock[i].applyForce(seperateSteer);
-            this.flock[i].move();
-            drawBoid(this.flock[i]);
             
 
+            this.flock[i].applyForce(cohesionSum);
+            this.flock[i].applyForce(seperateSteer);
+            this.flock[i].applyForce(alignSum);
+            this.flock[i].move();
+            drawBoid(this.flock[i]);
 
         }
     }

@@ -9,15 +9,30 @@ width = ctx.canvas.width = window.innerWidth;
 height = ctx.canvas.height = window.innerHeight;
 
 let boids = [];
-for(let i = 0;i<50;i++){
+for(let i = 0;i<500;i++){
+    let color = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+    color = color.map((val, i, arr) => {
+        let less = 0;
+        for(let j = 0 ;j<arr.length;j++){
+            if(j===i)continue;
+            if(val < arr[j]){
+                less++;
+            }else if(val > arr[j]){
+                less--;
+            }
+        }
+        return less < 0 ? 0 : less > 0 ? 255 : val ;
+    });
     boids.push(new Boid(
         Math.random() * width,
         Math.random() * height,
         {
             ctx,
-            color:'blue',
-            w:15,
-            h:30,
+            color:`rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`,
+            w:5,
+            h:10,
+            maxSpeed:5,
+            minSpeed:1
         }
     ))
 }
@@ -25,21 +40,15 @@ let bs = new BoidSimulation({
     flock:boids
 });
 
-let speed = 15;
+let speed = 0;
 let interval = setInterval(loop, speed);
 function loop() {
-    ctx.fillStyle = "white";
+    ctx.fillStyle = `rgba(0,0,0,1)`;
     ctx.fillRect(0, 0, width, height);
-    // for(let boid of boids){
-    //     boid.velocity.add(V.createRandom(-1, 1).normalize().mult(.5));
-    //     boid.move();
-    //     boid.draw();
-    // }
     bs.loop((boid) => {
         walls(boid);
         boid.draw();
     });
-
 }
 window.addEventListener('click', () => {
     if(interval !== null){

@@ -1,8 +1,10 @@
 import {default as V} from "./Vector.js";
-import Turtle from "./Turtle.js";
-export default class Boid extends Turtle{
+
+export default class Boid{
     constructor(x, y, options){
-        super(x, y);
+        this.position = V.createNew(x, y);
+        this.velocity = V.createRandom(-1, 1);
+        this.acceleration = V.createNew(0, 0);
         let ogo = {
             ctx: null,
             color: 'yellow',
@@ -11,6 +13,8 @@ export default class Boid extends Turtle{
             eiboh: 270, 
             visibility: 100,
             image: null,
+            maxSpeed: 3,
+            minSpeed:0
         }
         Object.assign(ogo, options);
         this.ctx = ogo.ctx;
@@ -24,9 +28,21 @@ export default class Boid extends Turtle{
         this.eiboh = ogo.eiboh;
         this.eibohR = ogo.eiboh * Math.PI/180;
         this.visibility = ogo.visibility;
+        this.maxSpeed = ogo.maxSpeed;
+        this.minSpeed = ogo.minSpeed;
         this.#initCoords();
         this.setPts(this.currentAngle);
         return this;
+    }
+    move(){
+        this.velocity.add(this.acceleration);
+        this.velocity.upperLimit(this.maxSpeed);
+        this.velocity.lowerLimit(this.minSpeed);
+        this.position.add(this.velocity);
+        this.acceleration.mult(0);
+    }
+    applyForce(vector){
+        this.acceleration.add(vector);
     }
     drawLineTo(vector){
         this.ctx.strokeStyle = this.color;

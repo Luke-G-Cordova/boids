@@ -1,0 +1,26 @@
+{
+  "name": "boids",
+  "version": "1.0.0",
+  "description": "<p align=\"center\"><img src=\"./assets/boids_graphic3.PNG\"></p>",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luke-G-Cordova/boids.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luke-G-Cordova/boids/issues"
+  },
+  "homepage": "https://github.com/Luke-G-Cordova/boids#readme"
+}

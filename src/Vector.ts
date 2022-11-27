@@ -1,8 +1,22 @@
-export class Vector implements BasicVector {
+export default class Vector implements BasicVector {
   private magnitude: number;
   constructor(public x: number, public y: number) {
     this.magnitude = Math.sqrt(this.x * this.x + this.y * this.y);
   }
+  static createRandom = (rangeMin: number, rangeMax: number) => {
+    const range = rangeMax - rangeMin;
+    return new Vector(
+      Math.random() * range + rangeMin,
+      Math.random() * range + rangeMin
+    );
+  };
+
+  static add = (vec1: Vector, vec2: Vector) => {
+    return new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
+  };
+  static sub = (vec1: Vector, vec2: Vector) => {
+    return new Vector(vec1.x - vec2.x, vec1.y - vec2.y);
+  };
 
   getMag = () => {
     this.magnitude = Math.sqrt(this.x * this.x + this.y * this.y);
@@ -12,13 +26,6 @@ export class Vector implements BasicVector {
   calcMag = () => {
     this.magnitude = Math.sqrt(this.x * this.x + this.y * this.y);
     return this;
-  };
-
-  static add = (vec1: Vector, vec2: Vector) => {
-    return new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
-  };
-  static sub = (vec1: Vector, vec2: Vector) => {
-    return new Vector(vec1.x - vec2.x, vec1.y - vec2.y);
   };
 
   add = (vec: Vector | BasicVector) => {

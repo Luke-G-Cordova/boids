@@ -1,12 +1,12 @@
 import { default as Vector } from './Vector';
 
-export default class Boid {
+export default class Boid implements BasicBoid {
   position: Vector;
   velocity: Vector;
   acceleration: Vector;
   constructor(options: BoidOptions) {
     this.position = new Vector(options.x, options.y);
-    this.velocity = Vector.createRandom(-1, 1);
+    this.velocity = new Vector(0, 0);
     this.acceleration = new Vector(0, 0);
   }
   applyForce = (vec: Vector) => {

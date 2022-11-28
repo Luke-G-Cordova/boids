@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "build",
-      "dependsOn": ["Stop Build", "Typescript Build"],
+      "dependsOn": ["Stop Build", "Typescript Build", "Webpack Build"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -33,6 +33,19 @@
         "reveal": "always",
         "panel": "new",
         "close": true
+      }
+    },
+    {
+      "label": "Webpack Build",
+      "type": "shell",
+      "command": "npx webpack --config webpack.config.js",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
       }
     }
   ],

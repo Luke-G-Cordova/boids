@@ -17,7 +17,10 @@ export default class Vector implements BasicVector {
   static sub = (vec1: Vector, vec2: Vector) => {
     return new Vector(vec1.x - vec2.x, vec1.y - vec2.y);
   };
-
+  distance = (vec: Vector) => {
+    const oVec = vec.clone();
+    return oVec.sub(this).getMag();
+  };
   getMag = () => {
     this.magnitude = Math.sqrt(this.x * this.x + this.y * this.y);
     return this.magnitude;

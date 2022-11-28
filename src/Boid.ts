@@ -13,7 +13,7 @@ export default class Boid implements BasicBoid {
     this.acceleration.add(vec);
   };
   move = () => {
-    this.velocity.add(this.acceleration);
+    this.velocity.add(this.acceleration).maxLimit(5);
     this.position.add(this.velocity);
     this.acceleration.mult(0);
   };

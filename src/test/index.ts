@@ -6,7 +6,12 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const amount = 500;
+const amount = 1000;
+const vision = 100;
+const cohesion = 0.11; //.008
+const alignment = 0.1; //.03
+const separation = 0.1;
+
 const flock: Boid[] = [];
 for (let i = 0; i < amount; i++) {
   flock.push(
@@ -25,19 +30,27 @@ if (ctx != null) {
     for (let i = 0; i < amount; i++) {
       let avgPos = new Vector(0, 0);
       let avgDir = new Vector(0, 0);
+      let sep = new Vector(0, 0);
       let count = 0;
       for (let j = 0; j < amount; j++) {
-        if (i != j && flock[i].position.distance(flock[j].position) <= 200) {
+        let distance = flock[i].position.distance(flock[j].position);
+        if (i != j && distance <= vision) {
           avgPos.add(flock[j].position);
           avgDir.add(flock[j].velocity);
+          let ogSep = flock[i].position.clone().sub(flock[j].position);
+          let newMag = (vision - distance) * 2;
+          ogSep.normalize().mult(newMag);
+          sep.add(ogSep);
           count++;
         }
       }
       if (count > 0) {
         avgPos.div(count);
         avgDir.div(count);
-        flock[i].applyForce(avgPos.sub(flock[i].position).mult(0.001));
-        flock[i].applyForce(avgDir.mult(0.1));
+        sep.div(count);
+        flock[i].applyForce(avgPos.sub(flock[i].position).mult(cohesion));
+        flock[i].applyForce(avgDir.mult(alignment));
+        flock[i].applyForce(sep.mult(separation));
       }
 
       flock[i].move();
@@ -50,7 +63,7 @@ if (ctx != null) {
 function drawCircle(boid: Boid) {
   ctx.fillStyle = 'black';
   ctx.beginPath();
-  ctx.arc(boid.position.x, boid.position.y, 5, 0, Math.PI * 2);
+  ctx.arc(boid.position.x, boid.position.y, 2, 0, Math.PI * 2);
   ctx.closePath();
   ctx.fill();
 }
